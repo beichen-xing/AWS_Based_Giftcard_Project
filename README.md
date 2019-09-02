@@ -2,6 +2,13 @@
 ## Project title
 Gift card customizing system
 
+## Group Member
+Zekun Dai
+Daojun Liang
+Beichen Xing
+Jian Liu
+George Heineman(Instructor)
+
 ## Motivation
 A short description of the motivation behind the creation and maintenance of the project. This should explain **why** the project exists.
 
