@@ -4,9 +4,17 @@ Gift card customizing system
 
 ## Group Member
 Zekun Dai
+
+
 Daojun Liang
+
+
 Beichen Xing
+
+
 Jian Liu
+
+
 George Heineman(Instructor)
 
 ## Motivation
