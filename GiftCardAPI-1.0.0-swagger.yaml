@@ -1,0 +1,504 @@
+swagger: '2.0'
+info:
+  version: "1.0.0"
+  title: 'CardMaker API'
+  description: 'CardMaker API'
+
+# tags are used for organizing operations
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: consumers
+  description: Operations available to regular consumers
+
+# paths
+paths:
+  /addCard:
+    post:
+      tags:
+      - consumers
+      summary: create a new card
+      operationId: requestAddCard
+      description: Requests to create a new card
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: AddCardRequest
+        description: Create a new card
+        schema:
+          $ref: '#/definitions/AddCardRequest'
+      responses:
+        200:
+          description: new card created
+        400:
+          description: invalid input, object invalid
+        409:
+          description: valid input
+          
+  /delCard:
+    post:
+      tags:
+      - consumers
+      summary: delete a specific card
+      operationId: requestDelCard
+      description: Requests to delete a specific card
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: DelCardRequest
+        description: delete a card
+        schema:
+          $ref: '#/definitions/DelCardRequest'
+      responses:
+        200:
+          description: card deleted
+        400:
+          description: invalid input, object invalid
+        409:
+          description: valid input
+          
+          
+  /updateCard:
+    post:
+      tags:
+      - consumers
+      summary: update a specific card
+      operationId: requestUpdateCard
+      description: Requests to update a specific card
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: UpdateCardRequest
+        description: Update a new card
+        schema:
+          $ref: '#/definitions/UpdateCardRequest'
+      responses:
+        200:
+          description: card updated
+        400:
+          description: invalid input, object invalid
+        409:
+          description: valid input
+          
+          
+  /updateText:
+    post:
+      tags:
+      - consumers
+      summary: update the text on card
+      operationId: requestUpdateText
+      description: Requests to update text
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: UpdateTextRequest
+        description: Update text
+        schema:
+          $ref: '#/definitions/UpdateTextRequest'
+      responses:
+        200:
+          description: text updated
+        400:
+          description: invalid input, object invalid
+        409:
+          description: valid input
+  
+  /updateImage:
+    post:
+      tags:
+      - consumers
+      summary: update a specific image
+      operationId: requestUpdateImage
+      description: Requests to update image
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: UpdateImageRequest
+        description: Update image, image base64 encoded
+        schema:
+          $ref: '#/definitions/UpdateImageRequest'
+      responses:
+        200:
+          description: image updated
+        400:
+          description: invalid input, object invalid
+        409:
+          description: valid input
+  /delImage:
+    post:
+      tags:
+      - consumers
+      summary: delete image
+      operationId: requestDeleteImage
+      description: Requests to delete a specific image
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: DelImageRequest
+        description: delete a image
+        schema:
+          $ref: '#/definitions/DelImageRequest'
+      responses:
+        200:
+          description: image deleted
+        400:
+          description: invalid input, object invalid
+        409:
+          description: valid input
+          
+  /delText:
+    post:
+      tags:
+      - consumers
+      summary: delete text
+      operationId: requestDeleteText
+      description: Requests to delete text
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: DelTextRequest
+        description: Delete text
+        schema:
+          $ref: '#/definitions/DelTextRequest'
+      responses:
+        200:
+          description: text deleted
+        400:
+          description: invalid input, object invalid
+        409:
+          description: valid input
+          
+  /dupilicateCard:
+    post:
+      tags:
+      - consumers
+      summary: duplicate a specific card
+      operationId: requestDumplicateCard
+      description: Requests to duplicate a specific card
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: DuplicateCardRequest
+        description: Duplicate a specific card
+        schema:
+          $ref: '#/definitions/DuplicateCardRequest'
+      responses:
+        200:
+          description: card duplicated
+        400:
+          description: invalid input, object invalid
+        409:
+          description: valid input
+  
+  /ListExsitingImage:
+    get:
+      tags:
+      - consumers
+      summary: list all images
+      operationId: requestLoadImage
+      description: Requests to list all images
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: ListCardRequest
+        description: list all images on a card
+        schema:
+          $ref: '#/definitions/ListExistingImage'
+      responses:
+        200:
+          description: all images listed
+        400:
+          description: not a single card found 
+        409:
+          description: valid input
+          
+  /listCard:
+    get:
+      tags:
+      - consumers
+      summary: list all cards
+      operationId: requestlistCard
+      description: Requests to list all cards
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: ListCardRequest
+        description: list all cards
+        schema:
+          $ref: '#/definitions/ListCardRequest'
+      responses:
+        200:
+          description: all cards listed
+        400:
+          description: not a single card found 
+        409:
+          description: valid input
+          
+  /displayCard:
+    post:
+      tags:
+      - consumers
+      summary: display a specific card
+      operationId: requestDisplayCard
+      description: Requests to display a specific card
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: DuplicateCardRequest
+        description: Duplicate a specific card
+        schema:
+          $ref: '#/definitions/DisplayCardRequest'
+      responses:
+        200:
+          description: display card
+        400:
+          description: invalid input, object invalid
+        409:
+          description: valid input
+          
+  /displayImage:
+    post:
+      tags:
+      - consumers
+      summary: display a image
+      operationId: requestDisplayImage
+      description: Requests to duplicate a specific image
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: DisplayImageRequest
+        description: Display a specific image
+        schema:
+          $ref: '#/definitions/DisplayImageRequest'
+      responses:
+        200:
+          description: image displayed
+        400:
+          description: invalid input, object invalid
+        409:
+          description: valid input
+          
+  
+  /saveCard:
+    post:
+      tags:
+      - consumers
+      summary: save a specific card
+      operationId: requestSaveCard
+      description: Requests to save a specific card
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: DuplicateCardRequest
+        description: Duplicate a specific card
+        schema:
+          $ref: '#/definitions/SaveCardRequest'
+      responses:
+        200:
+          description: card saved
+        400:
+          description: invalid input, object invalid
+        409:
+          description: valid input
+
+
+    
+definitions:
+
+  AddCardRequest:
+      type: object
+      required:
+      - id
+      - name
+      - eventtype
+      - recipient
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        eventtype:
+          type: string
+        recipient:
+          type: string
+  
+  DelCardRequest:
+    type: object
+    required:
+    - id
+    properties:
+      id:
+        type: string
+          
+  UpdateCardRequest:
+      type: object
+      required:
+      - eventtype
+      - recipient
+      properties:
+        eventtype:
+          type: string
+        recipient:
+          type: string
+  
+  UpdateTextRequest:
+      type: object
+      required:
+      - id
+      - text
+      - page
+      - font
+      - textsize
+      - location
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+        page:
+          type: string
+        font:
+          type: string
+        textsize:
+          type: string
+        location:
+          type: string
+  UpdateImageRequest:
+    type: object
+    required:
+    - id
+    - size
+    - location
+    - imagepath
+    - image
+    properties:
+      id:
+        type: string
+      size:
+        type: string
+      location:
+        type: string
+      imagepath:
+        type: string
+      image:
+        type: string
+  
+  
+  DelImageRequest:
+      type: object
+      required:
+      - id
+      - page
+      - image
+      properties:
+        id:
+          type: string
+        page:
+          type: string
+        image:
+          type: string
+  
+  DelTextRequest:
+    type: object
+    required:
+    - id
+    - page
+    - text
+    properties:
+      id:
+        type: string
+      page:
+        type: string
+      text:
+        type: string
+          
+  DuplicateCardRequest:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+  
+  ListExistingImage:
+      type: object
+      
+  ListCardRequest:
+      type: object  
+  
+  DisplayCardRequest:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+  
+  DisplayImageRequest:
+      type: object
+      required:
+        - id
+        - image
+      properties:
+        id:
+          type: string
+        image:
+          type: string
+        
+        
+  SaveCardRequest:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+
+          
+        
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+# basePath: /WPI3/CardMaker/v1.0
+schemes:
+ - https
+# Added by API Auto Mocking Plugin
+basePath: /beichen-xing/AddText/1.0.0
