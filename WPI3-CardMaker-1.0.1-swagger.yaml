@@ -96,9 +96,9 @@ paths:
     post:
       tags:
       - consumers
-      summary: list all cards
+      summary: get a card according to id
       operationId: getCard
-      description: Requests to list all cards
+      description: Requests to get a card
       consumes:
       - application/json
       produces:
@@ -106,12 +106,12 @@ paths:
       parameters:
       - in: body
         name: ListCardRequest
-        description: list all cards
+        description: get a card
         schema:
           $ref: '#/definitions/getCardRequest'
       responses:
         200:
-          description: all cards listed
+          description: successfully get a card
           schema:
             $ref: '#/definitions/getCardResponse'
         400:
@@ -337,26 +337,26 @@ paths:
     post:
       tags:
       - consumers
-      summary: list all cards
+      summary: get images on a card
       operationId: getImage
-      description: Requests to list all cards
+      description: Requests to show images
       consumes:
       - application/json
       produces:
       - application/json
       parameters:
       - in: body
-        name: ListCardRequest
-        description: list all cards
+        name: getImageRequest
+        description: get image on a card
         schema:
           $ref: '#/definitions/getImageRequest'
       responses:
         200:
-          description: all cards listed
+          description: show images
           schema:
             $ref: '#/definitions/getImageResponse'
         400:
-          description: not a single card found 
+          description: not a single image found 
         409:
           description: valid input
   
@@ -364,9 +364,9 @@ paths:
     post:
       tags:
       - consumers
-      summary: list all cards
+      summary: get text on a card
       operationId: getText
-      description: Requests to list all cards
+      description: Requests to list text on cards
       consumes:
       - application/json
       produces:
@@ -374,16 +374,16 @@ paths:
       parameters:
       - in: body
         name: ListCardRequest
-        description: list all cards
+        description: list all texts
         schema:
           $ref: '#/definitions/getTextRequest'
       responses:
         200:
-          description: all cards listed
+          description: all text showed
           schema:
             $ref: '#/definitions/getTextResponse'
         400:
-          description: not a single card found 
+          description: not a single word found 
         409:
           description: valid input
     
