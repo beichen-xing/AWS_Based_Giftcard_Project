@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: "1.0.0"
+  version: "1.0.1"
   title: 'CardMaker API'
   description: 'CardMaker API'
 
@@ -64,7 +64,7 @@ paths:
           description: invalid input, object invalid
         409:
           description: valid input
-          
+  
           
   /updateCard:
     post:
@@ -86,11 +86,64 @@ paths:
       responses:
         200:
           description: card updated
+          schema:
+            $ref: '#/definitions/UpdateCardResponse'
         400:
           description: invalid input, object invalid
         409:
           description: valid input
-          
+  /getCard:
+    post:
+      tags:
+      - consumers
+      summary: list all cards
+      operationId: getCard
+      description: Requests to list all cards
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: ListCardRequest
+        description: list all cards
+        schema:
+          $ref: '#/definitions/getCardRequest'
+      responses:
+        200:
+          description: all cards listed
+          schema:
+            $ref: '#/definitions/getCardResponse'
+        400:
+          description: not a single card found 
+        409:
+          description: valid input 
+  /dupilicateCard:
+    post:
+      tags:
+      - consumers
+      summary: duplicate a specific card
+      operationId: requestDumplicateCard
+      description: Requests to duplicate a specific card
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: DuplicateCardRequest
+        description: Duplicate a specific card
+        schema:
+          $ref: '#/definitions/DuplicateCardRequest'
+      responses:
+        200:
+          description: card duplicated
+          schema:
+            $ref: '#/definitions/DuplicateCardResponse'
+        400:
+          description: invalid input, object invalid
+        409:
+          description: valid input
           
   /updateText:
     post:
@@ -112,6 +165,8 @@ paths:
       responses:
         200:
           description: text updated
+          schema:
+            $ref: '#/definitions/UpdateTextResponse'
         400:
           description: invalid input, object invalid
         409:
@@ -137,6 +192,8 @@ paths:
       responses:
         200:
           description: image updated
+          schema:
+            $ref: '#/definitions/UpdateImageResponse'
         400:
           description: invalid input, object invalid
         409:
@@ -191,30 +248,7 @@ paths:
         409:
           description: valid input
           
-  /dupilicateCard:
-    post:
-      tags:
-      - consumers
-      summary: duplicate a specific card
-      operationId: requestDumplicateCard
-      description: Requests to duplicate a specific card
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - in: body
-        name: DuplicateCardRequest
-        description: Duplicate a specific card
-        schema:
-          $ref: '#/definitions/DuplicateCardRequest'
-      responses:
-        200:
-          description: card duplicated
-        400:
-          description: invalid input, object invalid
-        409:
-          description: valid input
+  
   
   /ListExsitingImage:
     get:
@@ -222,9 +256,7 @@ paths:
       - consumers
       summary: list all images
       operationId: requestLoadImage
-      description: Requests to list all images
-      consumes:
-      - application/json
+      description: Requests to list all images, return Base64 encoded string
       produces:
       - application/json
       parameters:
@@ -232,10 +264,14 @@ paths:
         name: ListCardRequest
         description: list all images on a card
         schema:
-          $ref: '#/definitions/ListExistingImage'
+          type: integer
       responses:
         200:
           description: all images listed
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ListExsitingImageResponse'
         400:
           description: not a single card found 
         409:
@@ -248,8 +284,6 @@ paths:
       summary: list all cards
       operationId: requestlistCard
       description: Requests to list all cards
-      consumes:
-      - application/json
       produces:
       - application/json
       parameters:
@@ -257,65 +291,18 @@ paths:
         name: ListCardRequest
         description: list all cards
         schema:
-          $ref: '#/definitions/ListCardRequest'
+          type: integer
       responses:
         200:
           description: all cards listed
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ListCardResponse'
         400:
           description: not a single card found 
         409:
           description: valid input
-          
-  /displayCard:
-    post:
-      tags:
-      - consumers
-      summary: display a specific card
-      operationId: requestDisplayCard
-      description: Requests to display a specific card
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - in: body
-        name: DuplicateCardRequest
-        description: Duplicate a specific card
-        schema:
-          $ref: '#/definitions/DisplayCardRequest'
-      responses:
-        200:
-          description: display card
-        400:
-          description: invalid input, object invalid
-        409:
-          description: valid input
-          
-  /displayImage:
-    post:
-      tags:
-      - consumers
-      summary: display a image
-      operationId: requestDisplayImage
-      description: Requests to duplicate a specific image
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - in: body
-        name: DisplayImageRequest
-        description: Display a specific image
-        schema:
-          $ref: '#/definitions/DisplayImageRequest'
-      responses:
-        200:
-          description: image displayed
-        400:
-          description: invalid input, object invalid
-        409:
-          description: valid input
-          
   
   /saveCard:
     post:
@@ -337,22 +324,79 @@ paths:
       responses:
         200:
           description: card saved
+          schema:
+            $ref: '#/definitions/SaveCardResponse'
         400:
           description: invalid input, object invalid
         409:
           description: valid input
 
-
+  
+  
+  /getImage:
+    post:
+      tags:
+      - consumers
+      summary: list all cards
+      operationId: getImage
+      description: Requests to list all cards
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: ListCardRequest
+        description: list all cards
+        schema:
+          $ref: '#/definitions/getImageRequest'
+      responses:
+        200:
+          description: all cards listed
+          schema:
+            $ref: '#/definitions/getImageResponse'
+        400:
+          description: not a single card found 
+        409:
+          description: valid input
+  
+  /getText:
+    post:
+      tags:
+      - consumers
+      summary: list all cards
+      operationId: getText
+      description: Requests to list all cards
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: ListCardRequest
+        description: list all cards
+        schema:
+          $ref: '#/definitions/getTextRequest'
+      responses:
+        200:
+          description: all cards listed
+          schema:
+            $ref: '#/definitions/getTextResponse'
+        400:
+          description: not a single card found 
+        409:
+          description: valid input
     
 definitions:
-
-  AddCardRequest:
+   
+  AddCardResponse:
       type: object
       required:
       - id
       - name
       - eventtype
       - recipient
+      - page
       properties:
         id:
           type: string
@@ -362,8 +406,15 @@ definitions:
           type: string
         recipient:
           type: string
+        page:
+          type: array
+          items:
+            $ref: '#/definitions/page'
+
+  page:
+    type: string
   
-  AddCardResponse:
+  AddCardRequest:
       type: object
       required:
       - id
@@ -387,17 +438,35 @@ definitions:
     properties:
       id:
         type: string
+  
           
   UpdateCardRequest:
       type: object
       required:
+      - name
       - eventtype
       - recipient
       properties:
+        name:
+          type: string
         eventtype:
           type: string
         recipient:
           type: string
+  
+  UpdateCardResponse:
+    type: object
+    required:
+    - name
+    - eventtype
+    - recipient
+    properties:
+      name:
+        type: string
+      eventtype:
+        type: string
+      recipient:
+        type: string
   
   UpdateTextRequest:
       type: object
@@ -421,16 +490,67 @@ definitions:
           type: string
         location:
           type: string
+  UpdateTextResponse:
+      type: object
+      required:
+      - id
+      - text
+      - page
+      - font
+      - textsize
+      - location
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+        page:
+          type: string
+        font:
+          type: string
+        textsize:
+          type: string
+        location:
+          type: string  
+  
+  
+  
   UpdateImageRequest:
     type: object
     required:
     - id
+    - page
     - size
     - location
     - imagepath
     - image
     properties:
       id:
+        type: string
+      page:
+        type: string
+      size:
+        type: string
+      location:
+        type: string
+      imagepath:
+        type: string
+      image:
+        type: string
+        
+  UpdateImageResponse:
+    type: object
+    required:
+    - id
+    - page
+    - size
+    - location
+    - imagepath
+    - image
+    properties:
+      id:
+        type: string
+      page:
         type: string
       size:
         type: string
@@ -469,22 +589,49 @@ definitions:
         type: string
       text:
         type: string
+      
+  
           
   DuplicateCardRequest:
       type: object
       required:
       - id
+      - recipient
+      - eventtype
       properties:
         id:
           type: string
-  
-  ListExistingImage:
+        recipient:
+          type: string
+        eventtype:
+          type: string
+        
+  DuplicateCardResponse:
       type: object
-      
-  ListCardRequest:
-      type: object  
+      required:
+      - id
+      - recipient
+      - eventtype
+      properties:
+        id:
+          type: string
+        recipient:
+          type: string
+        eventtype:
+          type: string
+          
+  ListExsitingImageResponse:
+      type: object
+      required:
+      - id
+      - image
+      properties:
+        id:
+          type: string
+        image:
+          type: string
   
-  DisplayCardRequest:
+  ListCardResponse:
       type: object
       required:
       - id
@@ -492,25 +639,138 @@ definitions:
         id:
           type: string
   
-  DisplayImageRequest:
-      type: object
-      required:
-        - id
-        - image
-      properties:
-        id:
-          type: string
-        image:
-          type: string
-        
-        
+  
   SaveCardRequest:
       type: object
       required:
         - id
+        - eventtype
+        - recipient
+        - page
       properties:
         id:
           type: string
+        eventtype:
+          type: string
+        recipient:
+          type: string
+        page:
+          type: string
+        
+  SaveCardResponse:
+      type: object
+      required:
+        - id
+        - eventtype
+        - recipient
+        - page
+      properties:
+        id:
+          type: string
+        eventtype:
+          type: string
+        recipient:
+          type: string
+        page:
+          type: string          
+  
+  getCardRequest:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+    
+  getCardResponse:
+      type: object
+      required:
+      - id
+      - name
+      - eventtype
+      - recipient
+      - page
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        eventtype:
+          type: string
+        recipient:
+          type: string
+        page:
+          type: array
+          items:
+            $ref: '#/definitions/page'
+  
+  getImageRequest:
+      type: object
+      required:
+        - id
+        - page
+      properties:
+        id:
+          type: string
+        page:
+          type: string
+
+  getImageResponse:
+      type: object
+      required:
+      - id
+      - page
+      - size
+      - location
+      - imagepath
+      - image
+      properties:
+        id:
+          type: string
+        page:
+          type: string
+        size:
+          type: string
+        location:
+          type: string
+        imagepath:
+          type: string
+        image:
+          type: string
+          
+
+  getTextRequest:
+      type: object
+      required:
+        - id
+        - page
+      properties:
+        id:
+          type: string
+        page:
+          type: string          
+  getTextResponse:
+      type: object
+      required:
+      - id
+      - text
+      - page
+      - font
+      - textsize
+      - location
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+        page:
+          type: string
+        font:
+          type: string
+        textsize:
+          type: string
+        location:
+          type: string  
 
           
         
