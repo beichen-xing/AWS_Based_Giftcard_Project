@@ -1,7 +1,8 @@
 <template>
   <div>
     <form action>
-      <input type="submit" value="Add Card" class="btn" />
+      <button @click="showInputComponent" class="btn">Add Card</button>
+      <!-- <input type="submit" value="Add Card" class="btn" /> -->
       <input type="submit" value="Delete Card" class="btn" />
       <input type="submit" value="Edit Card" class="btn" />
       <input type="submit" value="Duplicate Card" class="btn" />
@@ -14,7 +15,12 @@
 
 <script >
 export default {
-  name: "GalleryMenu"
+  name: "GalleryMenu",
+  methods: {
+    showInputComponent: function() {
+      this.$emit("showInput", false, true);
+    }
+  }
 };
 </script>
 

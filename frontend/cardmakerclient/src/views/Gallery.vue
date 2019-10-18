@@ -4,8 +4,14 @@
     <div id="menu">
       <GalleryMenu />
     </div>
-    <div>
-      <Cards v-bind:cards="cards" />
+
+    <div @showInput="showInputComponent(arguments)">
+      <div id="card_div" v-if="showCards">
+        <Cards v-bind:cards="cards" />
+      </div>
+      <div id="input_div" v-if="showInputs">
+        <CardInfo />
+      </div>
     </div>
   </div>
 </template>
@@ -14,15 +20,19 @@
 <script>
 import GalleryMenu from "../components/GalleryMenu";
 import Cards from "../components/Cards";
+import CardInfo from "../components/CardInfo";
 
 export default {
   name: "Gallery",
   components: {
     GalleryMenu,
-    Cards
+    Cards,
+    CardInfo
   },
   data() {
     return {
+      showCards: true,
+      showInputs: false,
       cards: [
         {
           id: 1,
@@ -41,6 +51,13 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    showInput: function(msg) {
+      this.showCards = msg[0];
+      this.showInputs = msg[1];
+      //console.log(this.showCards);
+    }
   }
 };
 </script>
