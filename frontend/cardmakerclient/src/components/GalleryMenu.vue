@@ -1,14 +1,14 @@
 <template>
   <div>
-    <form action>
-      <button @click="showInputComponent" class="btn">Add Card</button>
-      <!-- <input type="submit" value="Add Card" class="btn" /> -->
-      <input type="submit" value="Delete Card" class="btn" />
-      <input type="submit" value="Edit Card" class="btn" />
-      <input type="submit" value="Duplicate Card" class="btn" />
-      <input type="submit" value="Display Card" class="btn" />
-      <input type="submit" value="Generate Link" class="btn" />
-    </form>
+    <!-- <form action> -->
+    <button @click="showInputComponent()" class="btn">Add Card</button>
+    <!-- <input type="submit" value="Add Card" class="btn" /> -->
+    <input type="submit" value="Delete Card" class="btn" />
+    <button @click="showInputComponent()" class="btn">Edit Card</button>
+    <input type="submit" value="Duplicate Card" class="btn" />
+    <input type="submit" value="Display Card" class="btn" />
+    <input type="submit" value="Generate Link" class="btn" />
+    <!-- </form> -->
   </div>
 </template>
 
@@ -18,7 +18,8 @@ export default {
   name: "GalleryMenu",
   methods: {
     showInputComponent: function() {
-      this.$emit("showInput", false, true);
+      console.log("here");
+      this.$emit("showInputChild", { msg1: false, msg2: true });
     }
   }
 };

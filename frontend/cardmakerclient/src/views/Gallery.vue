@@ -2,15 +2,15 @@
   <div>
     <h1>This is the exsiting card</h1>
     <div id="menu">
-      <GalleryMenu />
+      <GalleryMenu @showInputChild="showInputParent" />
     </div>
 
-    <div @showInput="showInputComponent(arguments)">
+    <div>
       <div id="card_div" v-if="showCards">
         <Cards v-bind:cards="cards" />
       </div>
       <div id="input_div" v-if="showInputs">
-        <CardInfo />
+        <CardInfo @submitChild="submitParent" @cancelChild="cancelParent" />
       </div>
     </div>
   </div>
@@ -53,9 +53,22 @@ export default {
     };
   },
   methods: {
-    showInput: function(msg) {
-      this.showCards = msg[0];
-      this.showInputs = msg[1];
+    showInputParent: function(msg) {
+      console.log(msg);
+      this.showCards = msg.msg1;
+      this.showInputs = msg.msg2;
+      //console.log(this.showCards);
+    },
+    submitParent: function(msg) {
+      console.log(msg);
+      this.showCards = msg.msg1;
+      this.showInputs = msg.msg2;
+      //console.log(this.showCards);
+    },
+    cancelParent: function(msg) {
+      console.log(msg);
+      this.showCards = msg.msg1;
+      this.showInputs = msg.msg2;
       //console.log(this.showCards);
     }
   }
