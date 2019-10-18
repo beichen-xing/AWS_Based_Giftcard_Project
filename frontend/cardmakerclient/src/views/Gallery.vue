@@ -2,10 +2,10 @@
   <div>
     <h1>This is the exsiting card</h1>
     <div id="menu">
-      <GalleryMenu />
+      <GalleryMenu @showInputParent="showInputChild" />
     </div>
 
-    <div @showInput="showInputComponent(arguments)">
+    <div>
       <div id="card_div" v-if="showCards">
         <Cards v-bind:cards="cards" />
       </div>
@@ -53,7 +53,8 @@ export default {
     };
   },
   methods: {
-    showInput: function(msg) {
+    showInputParent: function(msg) {
+      console.log("come in!")
       this.showCards = msg[0];
       this.showInputs = msg[1];
       //console.log(this.showCards);
