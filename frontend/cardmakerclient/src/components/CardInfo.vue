@@ -13,7 +13,7 @@
     Recipient : {{ recipientName }}
     <p>----------------------------------------------------------------------------------------------------------------------</p>
     <div id="app">
-      <select v-model="selected">
+      <select v-model="eventType">
         <option value>---Event Type---</option>
         <option value="Birthday">Birthday</option>
         <option value="Christmas">Christmas</option>
@@ -21,7 +21,7 @@
       </select>
       <br />
       <br />
-      <div id="output">The event type selected: {{selected}}</div>
+      <div id="output">The event type selected: {{eventType}}</div>
     </div>
     <p>----------------------------------------------------------------------------------------------------------------------</p>
     <p />
@@ -35,8 +35,7 @@
 export default {
   data() {
     return {
-      selected: "",
-      picked: "是",
+      eventType: "",
       checked: false,
       checkedNames: [],
       inputContent: "",
@@ -54,8 +53,11 @@ export default {
         msg1: true,
         msg2: false,
         cardID: this.cardID,
-        cardName: this.inputContent,
-        recipientName: this.recipientName
+        cardName: this.cardName,
+        recipientName: this.recipientName,
+        eventType: this.eventType,
+        title: this.cardName,
+        test: false
       });
     },
     Cancel: function() {

@@ -7,7 +7,7 @@
 
     <div>
       <div id="card_div" v-if="showCards">
-        <Cards v-bind:cards="cards" />
+        <Cards v-bind:cards="cards" v-on:delCardsChild="delCardsParent" />
       </div>
       <div id="input_div" v-if="showInputs">
         <CardInfo @submitChild="submitParent" @cancelChild="cancelParent" />
@@ -18,6 +18,7 @@
 
 
 <script>
+import axios from "axios";
 import GalleryMenu from "../components/GalleryMenu";
 import Cards from "../components/Cards";
 import CardInfo from "../components/CardInfo";
@@ -33,24 +34,15 @@ export default {
     return {
       showCards: true,
       showInputs: false,
-      cards: [
-        {
-          id: 1,
-          title: "Card 1",
-          compelete: false
-        },
-        {
-          id: 2,
-          title: "Card 2",
-          compelete: false
-        },
-        {
-          id: 1,
-          title: "Card 2",
-          compelete: false
-        }
-      ]
+      cards: []
     };
+  },
+  created() {
+    console.log("Get all cards");
+    axios
+      .get("https://jsonplaceholder.typicode.com/todos?_limit=5")
+      .then(res => (this.cards = res.data))
+      .catch(err => console.log(err));
   },
   methods: {
     showInputParent: function(msg) {
@@ -64,12 +56,34 @@ export default {
       this.showCards = msg.msg1;
       this.showInputs = msg.msg2;
       //console.log(this.showCards);
+      //const cardName = msg.cardName;
+      //const recipient = msg.recipient;
+      //const eventType = msg.eventType;
+      const title = msg.title;
+      const test = msg.test;
+      axios
+        .post("https://jsonplaceholder.typicode.com/todos", {
+          title,
+          test
+          //cardName
+          //recipient
+          //eventType
+        })
+        .then(res => (this.todos = [...this.todos, res.data]));
+      //.catch(err => console.log(err));
+      console.log("cards created!");
     },
     cancelParent: function(msg) {
       console.log(msg);
       this.showCards = msg.msg1;
       this.showInputs = msg.msg2;
       //console.log(this.showCards);
+    },
+    delCardsParent(id) {
+      axios
+        .delete(`https://jsonplaceholder.typicode.com/todos/${id}`)
+        .then(res => (this.cards = this.cards.filter(card => card.id != id)))
+        .catch(err => console.log(err));
     }
   }
 };
