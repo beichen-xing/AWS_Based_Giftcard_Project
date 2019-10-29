@@ -16,10 +16,6 @@
         <input type="submit" value="Save" class="btn" />
       </form>
     </div>
-
-    <div>
-      <img alt="Vue logo" src="../assets/logo.png" />
-    </div>
   </div>
 </template>
 

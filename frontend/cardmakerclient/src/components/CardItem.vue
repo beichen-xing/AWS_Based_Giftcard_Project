@@ -1,8 +1,9 @@
 <template>
-  <div class="card-item" v-bind:class="{'is-complete':card.completed}">
+  <div class="card-item" v-bind:class="{'is-selected':card.selected}">
     <p>
-      <input type="checkbox" v-on:change="markComplete" />
+      <input type="checkbox" @click="select_item(card)" />
       {{card.title}}
+      <button @click="$emit('del-card', card.id)" class="del">Edit</button>
       <button @click="$emit('del-card', card.id)" class="del">x</button>
     </p>
   </div>
@@ -15,6 +16,7 @@ export default {
   name: "CardItem",
   props: ["card"],
   methods: {
+    select_item(card) {},
     markComplete() {
       this.card.completed = !this.card.completed;
     }
@@ -29,6 +31,11 @@ export default {
   padding: 10px;
   border-bottom: 1px #ccc dotted;
 }
+
+.is-selected {
+  font-weight: bold;
+}
+
 .is-complete {
   text-decoration: line-through;
 }

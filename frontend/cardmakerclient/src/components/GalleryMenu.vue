@@ -1,20 +1,30 @@
 <template>
   <div>
-    <form action>
-      <input type="submit" value="Add Card" class="btn" />
-      <input type="submit" value="Delete Card" class="btn" />
-      <input type="submit" value="Edit Card" class="btn" />
-      <input type="submit" value="Duplicate Card" class="btn" />
-      <input type="submit" value="Display Card" class="btn" />
-      <input type="submit" value="Generate Link" class="btn" />
-    </form>
+    <!-- <form action> -->
+    <button @click="showInputComponent()" class="btn">Add Card</button>
+    <!-- <input type="submit" value="Add Card" class="btn" /> -->
+    <button @click="deleteCard()" class="btn">Delete Card</button>
+    <button @click="showInputComponent()" class="btn">Edit Card</button>
+    <input type="submit" value="Duplicate Card" class="btn" />
+    <input type="submit" value="Display Card" class="btn" />
+    <input type="submit" value="Generate Link" class="btn" />
+    <!-- </form> -->
   </div>
 </template>
 
 
 <script >
 export default {
-  name: "GalleryMenu"
+  name: "GalleryMenu",
+  methods: {
+    showInputComponent: function() {
+      this.$emit("showInputChild", { msg1: false, msg2: true });
+    },
+    deleteCard() {
+      console.log("Card Deleted!");
+      this.$emit("deleteCardChild", { msg: "id" });
+    }
+  }
 };
 </script>
 
