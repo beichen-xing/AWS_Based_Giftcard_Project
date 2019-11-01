@@ -73,10 +73,9 @@ public class DeleteCard implements RequestStreamHandler {
 			logger.log(req.toString());
 
 			GiftCardDAO dao = new GiftCardDAO();
-			Card card = new Card(req.id,"","","");
 			
 			try {
-				if (dao.deleteCard(card)) {
+				if (dao.deleteCard(req.id)) {
 					response = new DeleteCardResponse(req.id, 200);
 				} else {
 					response = new DeleteCardResponse(req.id, 422, "Unable to delete card.");

@@ -32,7 +32,7 @@ public class GetCard implements RequestStreamHandler {
 	LambdaLogger logger;
 
 	Card GetCardFromRDS(String id) throws Exception {
-		if (logger != null) { logger.log("in loadValue"); }
+		if (logger != null) { logger.log("in loadCard"); }
 		GiftCardDAO dao = new GiftCardDAO();
 		Card card = dao.getCard(id);
 		return card;
@@ -93,23 +93,22 @@ public class GetCard implements RequestStreamHandler {
 
 			boolean fail = false;
 			String failMessage = "";
-			Card card;
+			Card card = null;
+			
 			try {
-				card = new Card("", "", "", "");
-			} catch (NumberFormatException e) {
-				try {
-					card = loadCard(req.id);
-				} catch (Exception ex) {
-					failMessage = req.id + " not-exist";
-					fail = true;
-				}
+				// do not call loadCard function
+				card = loadCard(req.id);
+			} catch (Exception ex) {
+				failMessage = req.id + " not-exist";
+				fail = true;
 			}
+			
 
 
 			if (fail) {
 				response = new GetCardResponse(400);
 			} else {
-				response = new GetCardResponse(200);  
+				response = new GetCardResponse(200, card.id);  
 			}
 		}
 

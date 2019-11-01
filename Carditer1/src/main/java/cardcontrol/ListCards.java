@@ -53,7 +53,10 @@ public class ListCards implements RequestStreamHandler {
 
 		AllCardResponse response;
 		try {
+			// Cannot use the getCards() function
+			System.out.println("###############################################################################################");
 			List<Card> list = getCards();
+			System.out.println("###############################################################################################");
 			response = new AllCardResponse(list, 200);
 		} catch (Exception e) {
 			response = new AllCardResponse(403, e.getMessage());

@@ -4,28 +4,34 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wpi.cs.heineman.calculator.model.Constant;
 import model.Card;
 
 
 public class GiftCardDAO {
 	java.sql.Connection conn;
 	
+	  public GiftCardDAO() {
+	    	try  {
+	    		conn = DatabaseUtil.connect();
+	    	} catch (Exception e) {
+	    		conn = null;
+	    	}
+	    }
+	
     public Card getCard(String id) throws Exception {
-        
         try {
-            Card card = null;
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM card WHERE id=?;");
+            
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM Cards WHERE card_id =?");
             ps.setString(1, id);
             ResultSet resultSet = ps.executeQuery();
-            
+            Card c = new Card("","","","");
             while (resultSet.next()) {
-                card = generateCard(resultSet);
+                c = generateCard(resultSet);
             }
             resultSet.close();
             ps.close();
             
-            return card;
+            return c;
 
         } catch (Exception e) {
         	e.printStackTrace();
@@ -35,7 +41,7 @@ public class GiftCardDAO {
     
     
     private Card generateCard(ResultSet resultSet) throws Exception {
-    	String id  = resultSet.getString("card_id");
+    	String id = resultSet.getString("card_id");
     	String type  = resultSet.getString("event_type");
     	String recipient  = resultSet.getString("recipient");
     	String name  = resultSet.getString("card_name");
@@ -48,7 +54,7 @@ public class GiftCardDAO {
 		 List<Card> allCards = new ArrayList<>();
 	        try {
 	            Statement statement = conn.createStatement();
-	            String query = "SELECT * FROM cards";
+	            String query = "SELECT * FROM Cards;";
 	            ResultSet resultSet = statement.executeQuery(query);
 
 	            while (resultSet.next()) {
@@ -65,17 +71,17 @@ public class GiftCardDAO {
 	}
 
 
-	public boolean deleteCard(Card card) throws Exception {
+	public boolean deleteCard(String id) throws Exception {
 		try {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM constants WHERE name = ?;");
-            ps.setString(1, card.id);
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM Cards WHERE card_id = ?;");
+            ps.setString(1, id);
             int numAffected = ps.executeUpdate();
             ps.close();
             
             return (numAffected == 1);
 
         } catch (Exception e) {
-            throw new Exception("Failed to insert constant: " + e.getMessage());
+            throw new Exception("Failed to delete card: " + e.getMessage());
         }
 	}
 }

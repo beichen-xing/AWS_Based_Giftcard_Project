@@ -9,7 +9,6 @@ import model.Card;
 /*===========Response with status code and error message==================*/
 
 public class AllCardResponse {
-	public static final String body = null;
 	public final List<Card> list;
 	public final int statusCode;
 	public final String error;
