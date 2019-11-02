@@ -61,7 +61,7 @@ export default {
 
   methods: {
     Submit: function() {
-      console.log("Submitted!");
+      //console.log("Submitted!");
       this.$emit("submitChild", {
         msg1: true,
         msg2: false,
@@ -69,12 +69,12 @@ export default {
         cardName: this.cardName,
         recipientName: this.recipientName,
         eventType: this.eventType,
-        title: this.cardName,
+        //title: this.title,
         orientation: this.orientation
       });
     },
     Cancel: function() {
-      console.log("Cancelled!");
+      //console.log("Cancelled!");
       this.$emit("cancelChild", { msg1: true, msg2: false });
     }
   }

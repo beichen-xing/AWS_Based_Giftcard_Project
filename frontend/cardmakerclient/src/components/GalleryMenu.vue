@@ -21,7 +21,7 @@ export default {
       this.$emit("showInputChild", { msg1: false, msg2: true });
     },
     deleteCard() {
-      this.$emit("deleteCardChild", { del: true });
+      this.$emit("deleteButtonChild", { del: true });
     }
   }
 };

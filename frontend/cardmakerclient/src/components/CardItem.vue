@@ -3,8 +3,8 @@
     <p>
       <input type="checkbox" @click="$emit('select-card-item', card.id)" />
       {{card.title}}
-      <button @click="$emit('del-card', card.id)">Edit</button>
-      <button @click="$emit('del-card', card.id)" class="del">x</button>
+      <!-- <button @click="$emit('del-card', card.id)">Edit</button> -->
+      <!-- <button @click="$emit('del-card-item', card.id)" class="del">x</button> -->
     </p>
   </div>
 </template>
