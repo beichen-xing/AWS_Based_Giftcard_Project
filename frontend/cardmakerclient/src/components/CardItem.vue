@@ -1,10 +1,13 @@
 <template>
-  <div class="card-item" v-bind:class="{'is-selected':card.selected}">
+  <div class="card-item">
     <p>
-      <input type="checkbox" @click="select_item(card)" />
-      {{card.title}}
-      <button @click="$emit('del-card', card.id)" class="del">Edit</button>
-      <button @click="$emit('del-card', card.id)" class="del">x</button>
+      <input type="checkbox" @click="$emit('select-card-item', card.id)" />
+      CardID: {{card.id}} &nbsp;
+      Card Name: {{card.name}} &nbsp;
+      Recipient: {{card.recipient}} &nbsp;
+      Event Type: {{card.type}} &nbsp;
+      <!-- <button @click="$emit('del-card', card.id)">Edit</button> -->
+      <!-- <button @click="$emit('del-card-item', card.id)" class="del">x</button> -->
     </p>
   </div>
 </template>
@@ -16,7 +19,9 @@ export default {
   name: "CardItem",
   props: ["card"],
   methods: {
-    select_item(card) {},
+    select_item() {
+      this.card.id = !this.card.id;
+    },
     markComplete() {
       this.card.completed = !this.card.completed;
     }

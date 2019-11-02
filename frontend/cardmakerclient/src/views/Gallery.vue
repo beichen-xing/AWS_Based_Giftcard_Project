@@ -2,12 +2,21 @@
   <div>
     <h1>This is the exsiting card</h1>
     <div id="menu">
-      <GalleryMenu @showInputChild="showInputParent" />
+      <GalleryMenu
+        v-bind:GetCardInfoMenu="GetCardInfoGallery"
+        @showInputChild="showInputParent"
+        @deleteButtonChild="deleteButtonParent"
+        @editCardMenu="editCardGallery"
+      />
     </div>
 
     <div>
       <div id="card_div" v-if="showCards">
-        <Cards v-bind:cards="cards" v-on:delCardsChild="delCardsParent" />
+        <Cards
+          v-bind:cards="cards"
+          v-on:delCardChild="delCardsParent"
+          v-on:select-card-cards="selectCardGallery"
+        />
       </div>
       <div id="input_div" v-if="showInputs">
         <CardInfo @submitChild="submitParent" @cancelChild="cancelParent" />
@@ -24,6 +33,7 @@ import Cards from "../components/Cards";
 import CardInfo from "../components/CardInfo";
 
 export default {
+  //inject: ["reload"],
   name: "Gallery",
   components: {
     GalleryMenu,
@@ -34,56 +44,144 @@ export default {
     return {
       showCards: true,
       showInputs: false,
-      cards: []
+      cards: [],
+      selectedCard: "",
+      GetCardInfoGallery: {
+        cardName: "",
+        eventType: "",
+        recipien: "",
+        orientation: ""
+      },
+      delID: ""
     };
   },
   created() {
-    console.log("Get all cards");
-    axios
-      .get("https://jsonplaceholder.typicode.com/todos?_limit=5")
-      .then(res => (this.cards = res.data))
-      .catch(err => console.log(err));
+    this.getCardsRequeast();
   },
   methods: {
+    addCardRequest(NewCard) {
+      //onsole.log("add card");
+      // console.log(NewCard);
+      axios
+        .post(
+          "https://lgibq7dd2d.execute-api.us-east-2.amazonaws.com/beta/addCard",
+          {
+            headers: {
+              "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
+              "cache-control": "no-cache",
+              "Access-Control-Allow-Origin": "*",
+              //"Content-Type": "text/plain"
+              "Content-Type": "application/json"
+            }
+          },
+          {
+            data: {
+              id: NewCard.id,
+              //title: NewCard.title,
+              name: NewCard.cardName,
+              recipient: NewCard.recipient,
+              type: NewCard.eventType
+              //orientation: NewCard.orientation
+            }
+          }
+        )
+        .then(res => console.log(res))
+        //.then(res => (this.cards = [...this.cards, res.data]))
+        .catch(err => console.log(err));
+      this.getCardsRequeast();
+    },
+    delCardRequest(id) {
+      //console.log("deleted!");
+      console.log(id);
+      axios
+        .post(
+          `https://lgibq7dd2d.execute-api.us-east-2.amazonaws.com/beta/delCard`,
+          {
+            headers: {
+              "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
+              "cache-control": "no-cache",
+              "Access-Control-Allow-Origin": "*",
+              "Content-Type": "application/json"
+            }
+          },
+          {
+            data: {
+              id: id
+            }
+          }
+        )
+        .then(res => (this.cards = [...this.cards, res.data]))
+        .catch(err => console.log(err));
+      this.getCardsRequeast();
+      //this.$router.go(0);
+    },
+    getCardRequest(id) {
+      //console.log("triggered!");
+      axios
+        .post(
+          `https://lgibq7dd2d.execute-api.us-east-2.amazonaws.com/beta/getCard${id}`
+        )
+        .then(
+          res =>
+            (this.GetCardInfoGallery = [...this.GetCardInfoGallery, res.data])
+        )
+        .catch(err => console.log(err));
+    },
+    getCardsRequeast() {
+      //console.log("get alll cards");
+      axios
+        .get(
+          "https://lgibq7dd2d.execute-api.us-east-2.amazonaws.com/beta/listCard"
+        )
+        .then(res => (this.cards = res.data.list))
+        .catch(err => console.log(err));
+    },
     showInputParent: function(msg) {
       console.log(msg);
       this.showCards = msg.msg1;
       this.showInputs = msg.msg2;
-      //console.log(this.showCards);
     },
     submitParent: function(msg) {
-      console.log(msg);
       this.showCards = msg.msg1;
       this.showInputs = msg.msg2;
-      //console.log(this.showCards);
-      //const cardName = msg.cardName;
-      //const recipient = msg.recipient;
-      //const eventType = msg.eventType;
-      const title = msg.title;
-      const test = msg.test;
-      axios
-        .post("https://jsonplaceholder.typicode.com/todos", {
-          title,
-          test
-          //cardName
-          //recipient
-          //eventType
-        })
-        .then(res => (this.todos = [...this.todos, res.data]));
-      //.catch(err => console.log(err));
-      console.log("cards created!");
+      const NewCard = {
+        id: msg.cardID,
+        cardName: msg.cardName,
+        recipient: msg.recipientName,
+        eventType: msg.eventType,
+        orientation: msg.orientation
+      };
+      //console.log(NewCard);
+      this.addCardRequest(NewCard);
+      //console.log("cards created!");
+      //this.$router.go(0);
+      //this.getCardsRequeast();
     },
     cancelParent: function(msg) {
       console.log(msg);
       this.showCards = msg.msg1;
       this.showInputs = msg.msg2;
       //console.log(this.showCards);
+      //this.$router.go(0);
     },
-    delCardsParent(id) {
-      axios
-        .delete(`https://jsonplaceholder.typicode.com/todos/${id}`)
-        .then(res => (this.cards = this.cards.filter(card => card.id != id)))
-        .catch(err => console.log(err));
+    selectCardGallery(id) {
+      console.log(id);
+      this.selectedCard = id;
+      //$emit("SelectCardIDGallery", id);
+    },
+    delCardsParent() {},
+    deleteButtonParent(msg) {
+      if (msg.del == true) {
+        this.delCardRequest(this.selectedCard);
+      }
+    },
+    editCardGallery(msg) {
+      if (msg.edit == true) {
+        this.showCards = msg.msg1;
+        this.showInputs = msg.msg2;
+        this.getCardRequest(this.id);
+        //console.log(this.id);
+      }
     }
   }
 };
