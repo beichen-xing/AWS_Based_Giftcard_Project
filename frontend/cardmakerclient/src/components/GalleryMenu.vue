@@ -21,8 +21,7 @@ export default {
       this.$emit("showInputChild", { msg1: false, msg2: true });
     },
     deleteCard() {
-      console.log("Card Deleted!");
-      this.$emit("deleteCardChild", { msg: "id" });
+      this.$emit("deleteCardChild", { del: true });
     }
   }
 };

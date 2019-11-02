@@ -12,7 +12,7 @@
     <input v-model.trim="recipientName" placeholder="Enter text..." />
     Recipient : {{ recipientName }}
     <p>----------------------------------------------------------------------------------------------------------------------</p>
-    <div id="app">
+    <div id="eventType">
       <select v-model="eventType">
         <option value>---Event Type---</option>
         <option value="Birthday">Birthday</option>
@@ -24,6 +24,17 @@
       <div id="output">The event type selected: {{eventType}}</div>
     </div>
     <p>----------------------------------------------------------------------------------------------------------------------</p>
+    <div id="orientation">
+      <select v-model="orientation">
+        <option value>---Orientation---</option>
+        <option value="Landscape">Landscape</option>
+        <option value="Portrait">Portrait</option>
+      </select>
+      <br />
+      <br />
+      <div id="output">The orientation selected: {{orientation}}</div>
+    </div>
+    <p>----------------------------------------------------------------------------------------------------------------------</p>
     <p />
     <button @click="Submit">Submit</button>
     <button @click="Cancel">Cancel</button>
@@ -32,6 +43,8 @@
  
  
 <script type="text/javascript">
+import uuid from "uuid";
+
 export default {
   data() {
     return {
@@ -42,7 +55,7 @@ export default {
       cardName: "",
       recipientName: "",
       textarea: "",
-      cardID: ""
+      orientation: ""
     };
   },
 
@@ -52,12 +65,12 @@ export default {
       this.$emit("submitChild", {
         msg1: true,
         msg2: false,
-        cardID: this.cardID,
+        cardID: uuid.v4(),
         cardName: this.cardName,
         recipientName: this.recipientName,
         eventType: this.eventType,
         title: this.cardName,
-        test: false
+        orientation: this.orientation
       });
     },
     Cancel: function() {

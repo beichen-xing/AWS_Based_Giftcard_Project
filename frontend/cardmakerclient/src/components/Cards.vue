@@ -3,7 +3,7 @@
     <div v-for="(card,index) in cards" :key="index">
       <CardItem
         v-bind:card="card"
-        v-on:select-card="$emit('select-card', card.id)"
+        v-on:select-card-item="$emit('select-card-cards', card.id)"
         v-on:del-card="$emit('delCardChild', card.id)"
       />
     </div>
