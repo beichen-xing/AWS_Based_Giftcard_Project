@@ -58,7 +58,7 @@ export default {
       orientation: ""
     };
   },
-
+  props: ["GetCardInfoMenu"],
   methods: {
     Submit: function() {
       //console.log("Submitted!");

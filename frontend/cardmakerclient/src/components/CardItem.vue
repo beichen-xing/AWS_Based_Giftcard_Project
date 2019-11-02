@@ -2,7 +2,10 @@
   <div class="card-item">
     <p>
       <input type="checkbox" @click="$emit('select-card-item', card.id)" />
-      {{card.title}}
+      CardID: {{card.id}} &nbsp;
+      Card Name: {{card.name}} &nbsp;
+      Recipient: {{card.recipient}} &nbsp;
+      Event Type: {{card.type}} &nbsp;
       <!-- <button @click="$emit('del-card', card.id)">Edit</button> -->
       <!-- <button @click="$emit('del-card-item', card.id)" class="del">x</button> -->
     </p>

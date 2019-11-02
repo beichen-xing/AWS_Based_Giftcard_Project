@@ -6,6 +6,7 @@ CREATE TABLE Cards(
     recipient varchar(20),
     event_type varchar(20),
     oritentation varchar(20)
+    card_url varchar(100)
     PRIMARY KEY(card_id)
 );
 

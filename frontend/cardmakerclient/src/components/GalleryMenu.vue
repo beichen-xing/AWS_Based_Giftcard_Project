@@ -4,7 +4,7 @@
     <button @click="showInputComponent()" class="btn">Add Card</button>
     <!-- <input type="submit" value="Add Card" class="btn" /> -->
     <button @click="deleteCard()" class="btn">Delete Card</button>
-    <button @click="showInputComponent()" class="btn">Edit Card</button>
+    <button @click="editCardMenu()" class="btn">Edit Card</button>
     <input type="submit" value="Duplicate Card" class="btn" />
     <input type="submit" value="Display Card" class="btn" />
     <input type="submit" value="Generate Link" class="btn" />
@@ -19,6 +19,9 @@ export default {
   methods: {
     showInputComponent: function() {
       this.$emit("showInputChild", { msg1: false, msg2: true });
+    },
+    editCardMenu: function() {
+      this.$emit("editCardMenu", { msg1: false, msg2: true, edit: true });
     },
     deleteCard() {
       this.$emit("deleteButtonChild", { del: true });
