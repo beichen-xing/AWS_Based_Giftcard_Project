@@ -39,6 +39,23 @@ public class GiftCardDAO {
         }
     }
     
+    public boolean CreateCard(String id, String name, String recipient, String type) throws Exception {
+        try {
+            
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO Cards (card_id, card_name,recipient,event_type) values(?,?,?,?);");
+            ps.setString(1, id);
+            ps.setString(2, name);
+            ps.setString(3, recipient);
+            ps.setString(4, type);
+            ps.execute();
+            return true;
+          
+        } catch (Exception e) {
+        	e.printStackTrace();
+            throw new Exception("Failed in creating card: " + e.getMessage());
+        }
+    }
+    
     
     private Card generateCard(ResultSet resultSet) throws Exception {
     	String id = resultSet.getString("card_id");

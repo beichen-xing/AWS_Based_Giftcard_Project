@@ -6,11 +6,17 @@ package http;
 public class GetCardResponse {
 	public final String id;
 	public final int statusCode;
+	public final String type;
+	public final String name;
+	public final String recipient;
 	
 
-	public GetCardResponse(int Code, String id) {
+	public GetCardResponse(int Code, String id,String name,String recipient, String type) {
 		this.statusCode = Code;
 		this.id = id;
+		this.name = name;
+		this.recipient = recipient;
+		this.type = type;
 		
 	}
 
@@ -18,5 +24,9 @@ public class GetCardResponse {
 	public GetCardResponse(int code) {
 		this.statusCode = code;
 		this.id = "";
+		this.name = "";
+		this.recipient = "";
+		this.type = "";
+		
 	}
 }

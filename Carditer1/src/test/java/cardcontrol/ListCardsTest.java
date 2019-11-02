@@ -39,7 +39,7 @@ public class ListCardsTest extends LambdaTest {
         
         boolean hasCard = false;
         for (Card c : resp.list) {
-        	if (c.id.equals("1")) { hasCard = true; break; }
+        	if (c.id.equals("2")) { hasCard = true; break; }
         }
         Assert.assertTrue("card Needs to exist in the cards table for this test case to work.", hasCard);
         Assert.assertEquals(200, resp.statusCode);

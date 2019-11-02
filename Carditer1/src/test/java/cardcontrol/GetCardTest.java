@@ -23,7 +23,7 @@ public class GetCardTest extends LambdaTest {
 	    public void testGetCard() throws IOException {
 	    	
 	    	// get card      
-	        GetCardRequest gcr = new GetCardRequest("1");
+	        GetCardRequest gcr = new GetCardRequest("2");
 	        
 	        String ccRequest = new Gson().toJson(gcr);
 	        String jsonRequest = new Gson().toJson(new PostRequest(ccRequest));
@@ -38,7 +38,7 @@ public class GetCardTest extends LambdaTest {
 	        System.out.println(resp);
 	        System.out.println(resp);
 	        
-	        Assert.assertEquals("1", resp.id);
+	        Assert.assertEquals("2", resp.id);
 	 }
 
 

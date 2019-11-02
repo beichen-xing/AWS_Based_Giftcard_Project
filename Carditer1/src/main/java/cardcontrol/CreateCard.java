@@ -18,33 +18,34 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.google.gson.Gson;
 
 import db.GiftCardDAO;
+import http.CreateCardRequest;
+import http.CreateCardResponse;
 import http.GetCardRequest;
 import http.GetCardResponse;
 import model.Card;
 
 
-public class GetCard implements RequestStreamHandler {
+public class CreateCard implements RequestStreamHandler {
 
 	
 	
-/*==================get card from RDS===========================*/ 
+/*==================Create card in RDS===========================*/ 
 	
 	LambdaLogger logger;
 
-	Card GetCardFromRDS(String id) throws Exception {
-		if (logger != null) { logger.log("in loadCard"); }
+	boolean CreateCardInRDS(String id,String name,String recipient,String type) throws Exception {
+		if (logger != null) { logger.log("in createCard"); }
 		GiftCardDAO dao = new GiftCardDAO();
-		Card card = dao.getCard(id);
-		return card;
+		return dao.CreateCard(id,name,recipient,type);
+		
 	}
 	
-	public Card loadCard(String id) throws Exception {
+	public void CreateCard(String id,String name,String recipient,String type) throws Exception {
 		Card card;
 		try {
-			card = GetCardFromRDS(id);
-			return card;
+			CreateCardInRDS(id,name,recipient,type);
 		} catch (Exception e) {
-			return null;
+			System.out.println("Error");
 		}
 	}
 
@@ -64,7 +65,7 @@ public class GetCard implements RequestStreamHandler {
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 
-		GetCardResponse response = null;
+		CreateCardResponse response = null;
 
 		
 		String body;
@@ -81,34 +82,33 @@ public class GetCard implements RequestStreamHandler {
 			}
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
-			response = new GetCardResponse(422);  
+			response = new CreateCardResponse(422);  
 			responseJson.put("body", new Gson().toJson(response));
 			processed = true;
 			body = null;
 		}
 
 		if (!processed) {
-			GetCardRequest req = new Gson().fromJson(body, GetCardRequest.class);
+			CreateCardRequest req = new Gson().fromJson(body, CreateCardRequest.class);
 			logger.log(req.toString());
 
 			boolean fail = false;
 			String failMessage = "";
-			Card card = null;
+			
 			
 			try {
-				// do not call loadCard function
-				card = loadCard(req.id);
+				CreateCard(req.id,req.name,req.recipient,req.type);
 			} catch (Exception ex) {
-				failMessage = req.id + " not-exist";
+				failMessage = req.id + "fail";
 				fail = true;
 			}
 			
 
 
 			if (fail) {
-				response = new GetCardResponse(400);
+				response = new CreateCardResponse(400);
 			} else {
-				response = new GetCardResponse(200, card.id, card.name,card.recipient,card.type);  
+				response = new CreateCardResponse(200);  
 			}
 		}
 

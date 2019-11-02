@@ -16,7 +16,7 @@ public class GetAndDeleteCardTest extends LambdaTest {
     public void testDeleteCard() throws IOException {
     	
     	// get card      
-        GetCardRequest gcr = new GetCardRequest("1");
+        GetCardRequest gcr = new GetCardRequest("2");
         
         String ccRequest = new Gson().toJson(gcr);
         String jsonRequest = new Gson().toJson(new PostRequest(ccRequest));
@@ -30,10 +30,10 @@ public class GetAndDeleteCardTest extends LambdaTest {
         GetCardResponse resp = new Gson().fromJson(post.body, GetCardResponse.class);
         System.out.println(resp);
         
-        Assert.assertEquals("1", resp.id);
+        Assert.assertEquals("2", resp.id);
         
         // now delete
-        DeleteCardRequest dcr = new DeleteCardRequest("1");
+        DeleteCardRequest dcr = new DeleteCardRequest("2");
         
         ccRequest = new Gson().toJson(dcr);
         jsonRequest = new Gson().toJson(new PostRequest(ccRequest));
@@ -45,7 +45,7 @@ public class GetAndDeleteCardTest extends LambdaTest {
 
         post = new Gson().fromJson(output.toString(), PostResponse.class);
         DeleteCardResponse d_resp = new Gson().fromJson(post.body, DeleteCardResponse.class);
-        Assert.assertEquals("1", d_resp.id);
+        Assert.assertEquals("2", d_resp.id);
         
         // try again and this should fail
         input = new ByteArrayInputStream(jsonRequest.getBytes());
