@@ -14,6 +14,7 @@
       <div id="card_div" v-if="showCards">
         <Cards
           v-bind:cards="cards"
+          v-bind:isSelectedCards="isSelectedGallery"
           v-on:delCardChild="delCardsParent"
           v-on:select-card-cards="selectCardGallery"
         />
@@ -45,6 +46,7 @@ export default {
       showCards: true,
       showInputs: false,
       cards: [],
+      isSelectedGallery: [],
       selectedCard: "",
       GetCardInfoGallery: {
         cardName: "",
@@ -52,7 +54,8 @@ export default {
         recipien: "",
         orientation: ""
       },
-      delID: ""
+      selectedCards: [],
+      isDelete: false
     };
   },
   created() {
@@ -61,16 +64,15 @@ export default {
   methods: {
     addCardRequest(NewCard) {
       //onsole.log("add card");
-      // console.log(NewCard);
+      console.log(NewCard);
       axios
         .post(
-          "https://lgibq7dd2d.execute-api.us-east-2.amazonaws.com/beta/addCard",
+          "https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/addCard",
           {
             headers: {
               "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
               "cache-control": "no-cache",
               "Access-Control-Allow-Origin": "*",
-              //"Content-Type": "text/plain"
               "Content-Type": "application/json"
             }
           },
@@ -81,22 +83,19 @@ export default {
               name: NewCard.cardName,
               recipient: NewCard.recipient,
               type: NewCard.eventType,
-              orientation: NewCard.orientation
+              oritentation: NewCard.orientation
             }
           }
         )
         .then(res => this.getCardsRequeast())
-        //.then(res => console.log(res.data), this.getCardsRequeast())
-        //.then(res => (this.cards = [...this.cards, res.data]))
         .catch(err => console.log(err));
-      this.getCardsRequeast();
     },
     delCardRequest(id) {
       //console.log("deleted!");
       console.log(id);
       axios
         .post(
-          `https://lgibq7dd2d.execute-api.us-east-2.amazonaws.com/beta/delCard`,
+          `https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/delCard`,
           {
             headers: {
               "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
@@ -114,13 +113,14 @@ export default {
         .then(res => this.getCardsRequeast())
         .catch(err => console.log(err));
       this.getCardsRequeast();
-      //this.$router.go(0);
     },
+
     getCardRequest(id) {
       //console.log("triggered!");
+      console.log(id);
       axios
         .post(
-          `https://lgibq7dd2d.execute-api.us-east-2.amazonaws.com/beta/getCard${id}`
+          "https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/getCard${id}"
         )
         .then(
           res =>
@@ -128,14 +128,15 @@ export default {
         )
         .catch(err => console.log(err));
     },
+
     getCardsRequeast() {
-      //console.log("get alll cards");
       axios
         .get(
-          "https://lgibq7dd2d.execute-api.us-east-2.amazonaws.com/beta/listCard"
+          "https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/listCard"
         )
         .then(res => (this.cards = res.data.list))
         .catch(err => console.log(err));
+      //console.log(this.cards);
     },
     showInputParent: function(msg) {
       console.log(msg);
@@ -167,13 +168,22 @@ export default {
     },
     selectCardGallery(id) {
       console.log(id);
-      this.selectedCard = id;
+      if (this.selectedCards.indexOf(id) == -1) {
+        this.selectedCards.push(id);
+        this.selectedCard = id;
+      }
       //$emit("SelectCardIDGallery", id);
     },
     delCardsParent() {},
     deleteButtonParent(msg) {
-      if (msg.del == true) {
-        this.delCardRequest(this.selectedCard);
+      this.isDelete = msg.del;
+      console.log(this.selectedCards);
+      if (this.isDelete == true) {
+        for (var i = 0; i < this.selectedCards.length; i++) {
+          this.delCardRequest(this.selectedCards[i]);
+          console.log("Deleted");
+        }
+        this.isDelete = false;
       }
     },
     editCardGallery(msg) {

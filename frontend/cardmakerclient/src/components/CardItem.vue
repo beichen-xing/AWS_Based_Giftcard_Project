@@ -6,9 +6,7 @@
       Card Name: {{card.name}} &nbsp;
       Recipient: {{card.recipient}} &nbsp;
       Event Type: {{card.type}} &nbsp;
-      orientation: {{card.orientation}} &nbsp;
-      <!-- <button @click="$emit('del-card', card.id)">Edit</button> -->
-      <!-- <button @click="$emit('del-card-item', card.id)" class="del">x</button> -->
+      orientation: {{card.oritentation}} &nbsp;
     </p>
   </div>
 </template>
@@ -20,8 +18,9 @@ export default {
   name: "CardItem",
   props: ["card"],
   methods: {
-    select_item() {
+    select_card() {
       this.card.id = !this.card.id;
+      this.$emit("select-card-item", card.id);
     },
     markComplete() {
       this.card.completed = !this.card.completed;

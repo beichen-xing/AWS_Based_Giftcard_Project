@@ -69,7 +69,6 @@ export default {
         cardName: this.cardName,
         recipientName: this.recipientName,
         eventType: this.eventType,
-        //title: this.title,
         orientation: this.orientation
       });
     },
