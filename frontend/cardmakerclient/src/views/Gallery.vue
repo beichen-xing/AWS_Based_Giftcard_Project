@@ -80,12 +80,13 @@ export default {
               //title: NewCard.title,
               name: NewCard.cardName,
               recipient: NewCard.recipient,
-              type: NewCard.eventType
-              //orientation: NewCard.orientation
+              type: NewCard.eventType,
+              orientation: NewCard.orientation
             }
           }
         )
-        .then(res => console.log(res))
+        .then(res => this.getCardsRequeast())
+        //.then(res => console.log(res.data), this.getCardsRequeast())
         //.then(res => (this.cards = [...this.cards, res.data]))
         .catch(err => console.log(err));
       this.getCardsRequeast();
@@ -110,7 +111,7 @@ export default {
             }
           }
         )
-        .then(res => (this.cards = [...this.cards, res.data]))
+        .then(res => this.getCardsRequeast())
         .catch(err => console.log(err));
       this.getCardsRequeast();
       //this.$router.go(0);

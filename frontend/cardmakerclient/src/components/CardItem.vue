@@ -6,6 +6,7 @@
       Card Name: {{card.name}} &nbsp;
       Recipient: {{card.recipient}} &nbsp;
       Event Type: {{card.type}} &nbsp;
+      orientation: {{card.orientation}} &nbsp;
       <!-- <button @click="$emit('del-card', card.id)">Edit</button> -->
       <!-- <button @click="$emit('del-card-item', card.id)" class="del">x</button> -->
     </p>
