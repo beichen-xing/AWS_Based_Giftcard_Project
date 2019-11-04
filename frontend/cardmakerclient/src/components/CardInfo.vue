@@ -17,7 +17,11 @@
         <option value>---Event Type---</option>
         <option value="Birthday">Birthday</option>
         <option value="Christmas">Christmas</option>
-        <option value="Halloween">Halloween</option>
+        <option value="Back to School">Back to School</option>
+        <option value="Anniversery">Anniversery</option>
+        <option value="Thanksgiving">Thanksgiving</option>
+        <option value="Easter">Easter</option>
+        <option value="Valentines Day">Valentines Day</option>
       </select>
       <br />
       <br />
