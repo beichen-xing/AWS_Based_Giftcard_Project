@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-for="(card,index) in cards" :key="index">
-      <CardItem v-bind:card="card" v-on:select-card-item="$emit('select-card-cards', card.id)" />
+      <CardItem v-bind:card="card" v-on:select-card-item="selectCardCards" />
     </div>
   </div>
 </template>
@@ -14,7 +14,13 @@ export default {
   components: {
     CardItem
   },
-  props: ["cards"]
+  props: ["cards"],
+  methods: {
+    selectCardCards(msg) {
+      //console.log(msg);
+      this.$emit("select-card-cards", { id: msg.card, selected: msg.selected });
+    }
+  }
 };
 </script>
 

@@ -166,18 +166,29 @@ export default {
       //console.log(this.showCards);
       //this.$router.go(0);
     },
-    selectCardGallery(id) {
-      console.log(id);
-      if (this.selectedCards.indexOf(id) == -1) {
-        this.selectedCards.push(id);
-        this.selectedCard = id;
+    selectCardGallery(msg) {
+      //console.log(msg);
+      if (msg.selected == true) {
+        console.log("selcted triggered!");
+        if (this.selectedCards.indexOf(msg.id) == -1) {
+          this.selectedCards.push(msg.id);
+          this.selectedCard = msg.id;
+        }
       }
+      if (msg.selected == false) {
+        console.log("deselcted triggered!");
+        if (this.selectedCards.indexOf(msg.id) != -1) {
+          this.selectedCards.pop(msg.id);
+          this.selected = "";
+        }
+      }
+      //console.log(this.selectedCards);
       //$emit("SelectCardIDGallery", id);
     },
     delCardsParent() {},
     deleteButtonParent(msg) {
       this.isDelete = msg.del;
-      console.log(this.selectedCards);
+      //console.log(this.selectedCards);
       if (this.isDelete == true) {
         for (var i = 0; i < this.selectedCards.length; i++) {
           this.delCardRequest(this.selectedCards[i]);

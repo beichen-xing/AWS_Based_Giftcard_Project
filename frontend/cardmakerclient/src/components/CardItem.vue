@@ -1,7 +1,7 @@
 <template>
   <div class="card-item">
     <p>
-      <input type="checkbox" @click="$emit('select-card-item', card.id)" />
+      <input type="checkbox" v-on:change="select_card($event)" />
       CardID: {{card.id}} &nbsp;
       Card Name: {{card.name}} &nbsp;
       Recipient: {{card.recipient}} &nbsp;
@@ -18,9 +18,14 @@ export default {
   name: "CardItem",
   props: ["card"],
   methods: {
-    select_card() {
-      this.card.id = !this.card.id;
-      this.$emit("select-card-item", card.id);
+    select_card(event) {
+      if (event.target.checked) {
+        //console.log("Selected!");
+        this.$emit("select-card-item", { card: this.card.id, selected: true });
+      } else {
+        //console.log("DeSelected!");
+        this.$emit("select-card-item", { card: this.card.id, selected: false });
+      }
     },
     markComplete() {
       this.card.completed = !this.card.completed;
