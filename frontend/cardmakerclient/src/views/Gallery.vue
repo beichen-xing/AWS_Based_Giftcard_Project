@@ -88,7 +88,7 @@ export default {
           }
         )
         .then(res => this.getCardsRequeast())
-        .catch(err => console.log(err));
+        .catch(err => alert(err.response));
     },
     delCardRequest(id) {
       //console.log("deleted!");
@@ -111,7 +111,7 @@ export default {
           }
         )
         .then(res => this.getCardsRequeast())
-        .catch(err => console.log(err));
+        .catch(err => alert(err.response));
       this.getCardsRequeast();
     },
 
@@ -126,7 +126,7 @@ export default {
           res =>
             (this.GetCardInfoGallery = [...this.GetCardInfoGallery, res.data])
         )
-        .catch(err => console.log(err));
+        .catch(err => alert(err));
     },
 
     getCardsRequeast() {
@@ -135,7 +135,7 @@ export default {
           "https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/listCard"
         )
         .then(res => (this.cards = res.data.list))
-        .catch(err => console.log(err));
+        .catch(err => alert(err.response));
       //console.log(this.cards);
     },
     showInputParent: function(msg) {
