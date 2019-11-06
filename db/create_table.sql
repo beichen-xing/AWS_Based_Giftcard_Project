@@ -5,8 +5,8 @@ CREATE TABLE Cards(
     card_name varchar(50),
     recipient varchar(20),
     event_type varchar(20),
-    oritentation varchar(20)
-    card_url varchar(100)
+    oritentation varchar(20),
+    card_url varchar(100),
     PRIMARY KEY(card_id)
 );
 
@@ -20,7 +20,7 @@ CREATE TABLE Texts(
     text_id varchar(40) AUTO_INCREMENT,
     content varchar(1000),
     font varchar(40),
-    bounds varchar(40)
+    bounds varchar(40),
     PRIMARY KEY(text_id)
 );
 
@@ -28,7 +28,7 @@ CREATE TABLE Images(
     image_id varchar(40) AUTO_INCREMENT,
     image_path varchar(40),
     image_source varchar(1000),
-    bounds varchar(40)
+    bounds varchar(40),
     PRIMARY KEY(image_id)
 );
 
