@@ -1,41 +1,65 @@
 <template>
   <div id="app">
-    <div id="nav" class="nav">
-      <router-link to="/" class="routerlink">Home</router-link>|
-      <router-link to="/about" class="routerlink">About</router-link>|
-      <router-link to="/Gallery" class="routerlink">Gallery</router-link>|
-      <router-link to="/Editor" class="routerlink">Card Editor</router-link>
+    <div class="nav">
+      <el-menu :default-active="$route.path" router mode="horizontal">
+        <el-menu-item
+          v-for="(navItem,index) in navList"
+          :key="index"
+          :index="navItem.index"
+        >{{navItem.name}}</el-menu-item>
+      </el-menu>
     </div>
-    <router-view />
+    <div class="view-wrapper">
+      <router-view />
+    </div>
   </div>
 </template>
 
-
-<style>
+<script>
+export default {
+  data() {
+    return {
+      navList: [
+        { name: "Home", index: "/" },
+        { name: "About", index: "/about" },
+        { name: "Gallery", index: "/gallery" },
+        { name: "Card Editor", index: "/editor" }
+      ]
+    };
+  },
+  methods: {},
+  mounted() {
+  }
+};
+</script>
+<style scoped>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  /* margin-top: 60px; */
-}
-
-.nav {
-  display: inline-block;
-  width: 100%;
-  text-align: center;
-  background: #000;
-  font-size: 1.25em;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #1b1d1f;
   color: #fff;
 }
 
-.routerlink {
-  display: inline-block;
-  border: none;
-  background: #000;
-  color: #fff;
-  padding: 7px 20px;
-  cursor: pointer;
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+
+.view-wrapper {
+  flex: 1;
+}
+
+/* menu */
+.el-menu--horizontal > .el-menu-item {
+  height: 3vmax;
+  line-height: 3vmax;
+}
+.el-menu-item {
+  font-size: 1.2vmax;
 }
 </style>
