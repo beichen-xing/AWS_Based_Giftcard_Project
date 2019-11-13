@@ -3,15 +3,25 @@
     <div class="add-btn" @click="showAddDialog = true">
       <i class="iconfont icon-add"></i>
     </div>
-    <div class="del-btn">
+    <!-- <div class="del-btn">
       <i class="iconfont icon-delete"></i>
-    </div>
+    </div>-->
+
     <div class="card-view" v-loading="cardViewLoaded" element-loading-background="transparent">
       <el-card class="card-item" v-for="(card,index) in cards" :key="index">
         <div slot="header" class="card-header">
           <span>{{card.name}}</span>
-          <el-button class="card-action-btn" type="text">
+          <el-button class="card-action-btn" type="text" @click="editCard(card.id)">
             <i class="iconfont icon-edit"></i>
+          </el-button>
+          <el-button class="card-action-btn" type="text" @click="generateLink(card.id)">
+            <i class="el-icon-share"></i>
+          </el-button>
+          <el-button class="card-action-btn" type="text" @click="displayCard(card.id)">
+            <i class="el-icon-view"></i>
+          </el-button>
+          <el-button class="card-action-btn" type="text" @click="duplicateCard(card.id)">
+            <i class="el-icon-document-copy"></i>
           </el-button>
           <el-button class="card-action-btn" type="text" @click="delCard(card.id)">
             <i class="iconfont icon-delete"></i>
@@ -32,12 +42,20 @@
           <el-input v-model="addCardForm.recipient" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="Oritentation" :label-width="formLabelWidth">
-          <el-input v-model="addCardForm.oritentation" autocomplete="off"></el-input>
+          <el-select v-model="addCardForm.oritentation" placeholder="please choose the orientation">
+            <el-option label="Landscape" value="Landscape"></el-option>
+            <el-option label="Portrait" value="Portait"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="Type" :label-width="formLabelWidth">
           <el-select v-model="addCardForm.type" placeholder="please choose the type">
             <el-option label="Back To School" value="Back To School"></el-option>
             <el-option label="Birthday" value="Birthday"></el-option>
+            <el-option label="Christmas" value="Christmas"></el-option>
+            <el-option label="Thanksgiving" value="Thanksgiving"></el-option>
+            <el-option label="Halloween" value="Halloween"></el-option>
+            <el-option label="Anniversary" value="Anniversary"></el-option>
+            <el-option label="Valentine's Day" value="Valentine's Day"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -146,6 +164,40 @@ export default {
         this.$http
           .post(
             `https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/delCard`,
+            {
+              headers: {
+                "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
+                "cache-control": "no-cache",
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json"
+              }
+            },
+            {
+              data: {
+                id: id
+              }
+            }
+          )
+          .then(() => {
+            this.$message({
+              type: "success",
+              message: "The card is deleted!"
+            });
+            this.getCards();
+          })
+          .catch(err => console.log(err));
+      });
+    },
+
+    editCard(id) {
+      this.$confirm("Are you sure to edit", {
+        confirmButtonText: "Confirm",
+        cancelButtonText: "Cancel",
+        type: "warning"
+      }).then(() => {
+        this.$http
+          .post(
+            `https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/editCard`,
             {
               headers: {
                 "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
@@ -292,11 +344,10 @@ export default {
 }
 
 .del-btn:hover {
-  color:#fff;
+  color: #fff;
   background: #f44336;
   box-shadow: #f44336 0px 1px 0.5vmax;
   transform: rotate(30deg);
-  
 }
 
 .del-btn i {

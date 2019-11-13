@@ -21,6 +21,9 @@ Vue.prototype.$http = axios
 
 import router from './router'
 import App from './App.vue'
+import VueKonva from 'vue-konva';
+
+Vue.use(VueKonva);
 
 Vue.config.productionTip = false
 Vue.use(VueTypedJs)

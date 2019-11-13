@@ -8,7 +8,7 @@
           </div>
         </transition>
       </div>
-      <vue-typed-js :strings="['Lorem ipsum dolor sit amet, consectetur adipisicing elit.']">
+      <vue-typed-js :strings="['This is where you make cards for your loved ones and friends.']">
         <p class="typed-wrapper">
           <span class="typing"></span>
         </p>
