@@ -11,8 +11,11 @@
       <el-card class="card-item" v-for="(card,index) in cards" :key="index">
         <div slot="header" class="card-header">
           <span>{{card.name}}</span>
+          <!-- <router-link :to="{ path:'Editor', query: { id: card.id} }">
+            <i class="el-icon-edit"></i>
+          </router-link>-->
           <el-button class="card-action-btn" type="text" @click="editCard(card.id)">
-            <i class="iconfont icon-edit"></i>
+            <i class="el-icon-edit"></i>
           </el-button>
           <el-button class="card-action-btn" type="text" @click="generateLink(card.id)">
             <i class="el-icon-share"></i>
@@ -24,7 +27,7 @@
             <i class="el-icon-document-copy"></i>
           </el-button>
           <el-button class="card-action-btn" type="text" @click="delCard(card.id)">
-            <i class="iconfont icon-delete"></i>
+            <i class="el-icon-delete"></i>
           </el-button>
         </div>
         <p>To:{{card.recipient}}</p>
@@ -153,7 +156,7 @@ export default {
     },
     closeAdd() {
       this.showAddDialog = false;
-      this.addCardForm = JSON.parse(JSON.stringify(emptyForm));
+      this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
     },
     delCard(id) {
       this.$confirm("Are you sure to delete", {
@@ -190,109 +193,13 @@ export default {
     },
 
     editCard(id) {
-      this.$confirm("Are you sure to edit", {
-        confirmButtonText: "Confirm",
-        cancelButtonText: "Cancel",
-        type: "warning"
-      }).then(() => {
-        this.$http
-          .post(
-            `https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/editCard`,
-            {
-              headers: {
-                "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
-                "cache-control": "no-cache",
-                "Access-Control-Allow-Origin": "*",
-                "Content-Type": "application/json"
-              }
-            },
-            {
-              data: {
-                id: id
-              }
-            }
-          )
-          .then(() => {
-            this.$message({
-              type: "success",
-              message: "The card is deleted!"
-            });
-            this.getCards();
-          })
-          .catch(err => console.log(err));
+      this.$router.push({
+        path: "Editor",
+        query: {
+          id: id
+        }
       });
     }
-
-    // getCardRequest(id) {
-    //   //console.log("triggered!");
-    //   console.log(id);
-    //   this.$http
-    //     .post(
-    //       "https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/getCard${id}"
-    //     )
-    //     .then(
-    //       res =>
-    //         (this.GetCardInfoGallery = [...this.GetCardInfoGallery, res.data])
-    //     )
-    //     .catch(err => console.log(err));
-    // },
-
-    // showInputParent: function(msg) {
-    //   console.log(msg);
-    //   this.showCards = msg.msg1;
-    //   this.showInputs = msg.msg2;
-    // },
-    // submitParent: function(msg) {
-    //   this.showCards = msg.msg1;
-    //   this.showInputs = msg.msg2;
-    //   const NewCard = {
-    //     id: msg.cardID,
-    //     cardName: msg.cardName,
-    //     recipient: msg.recipientName,
-    //     eventType: msg.eventType,
-    //     orientation: msg.orientation
-    //   };
-    //   //console.log(NewCard);
-    //   this.addCard(NewCard);
-    //   //console.log("cards created!");
-    //   //this.$router.go(0);
-    //   //this.getCards();
-    // },
-    // cancelParent: function(msg) {
-    //   console.log(msg);
-    //   this.showCards = msg.msg1;
-    //   this.showInputs = msg.msg2;
-    //   //console.log(this.showCards);
-    //   //this.$router.go(0);
-    // },
-    // selectCardGallery(id) {
-    //   console.log(id);
-    //   if (this.selectedCards.indexOf(id) == -1) {
-    //     this.selectedCards.push(id);
-    //     this.selectedCard = id;
-    //   }
-    //   //$emit("SelectCardIDGallery", id);
-    // },
-    // delCardsParent() {},
-    // deleteButtonParent(msg) {
-    //   this.isDelete = msg.del;
-    //   console.log(this.selectedCards);
-    //   if (this.isDelete == true) {
-    //     for (var i = 0; i < this.selectedCards.length; i++) {
-    //       this.delCard(this.selectedCards[i]);
-    //       console.log("Deleted");
-    //     }
-    //     this.isDelete = false;
-    //   }
-    // },
-    // editCardGallery(msg) {
-    //   if (msg.edit == true) {
-    //     this.showCards = msg.msg1;
-    //     this.showInputs = msg.msg2;
-    //     this.getCardRequest(this.id);
-    //     //console.log(this.id);
-    //   }
-    // }
   },
   created() {},
   mounted() {

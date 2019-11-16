@@ -28,8 +28,7 @@ export default {
     };
   },
   methods: {},
-  mounted() {
-  }
+  mounted() {}
 };
 </script>
 <style scoped>
@@ -37,7 +36,7 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: scroll;
   background: #1b1d1f;
   color: #fff;
 }
