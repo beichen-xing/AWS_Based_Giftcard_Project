@@ -1,0 +1,110 @@
+swagger: '2.0'
+info:
+  version: "3.0"
+  title: 'CardMaker API'
+  description: 'CardMaker API'
+
+# tags are used for organizing operations
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: consumers
+  description: Operations available to regular consumers
+
+# paths
+paths:
+   /AddText:
+    post:
+      tags:
+      - consumers
+      summary: update the text on card
+      operationId: requestUpdateText
+      description: Requests to update text
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: UpdateTextRequest
+        description: Update text
+        schema:
+          $ref: '#/definitions/AddTextRequest'
+      responses:
+        200:
+          description: text updated
+        400:
+          description: invalid input, object invalid
+        409:
+          description: valid input
+          
+   /delText:
+    post:
+      tags:
+      - consumers
+      summary: delete text
+      operationId: requestDeleteText
+      description: Requests to delete text
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: DelTextRequest
+        description: Delete text
+        schema:
+          $ref: '#/definitions/DelTextRequest'
+      responses:
+        200:
+          description: text deleted
+          schema:
+            $ref: '#/definitions/DelTextResponse'
+        400:
+          description: invalid input, object invalid
+        409:
+          description: valid input
+          
+ 
+definitions:
+  
+  AddTextRequest:
+      type: object
+      required:
+      - id
+      - text
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+
+ 
+  DelTextRequest:
+    type: object
+    required:
+    - id
+    properties:
+      id:
+        type: string
+
+        
+  DelTextResponse:
+    type: object
+    required:
+    - id
+    properties:
+      id:
+        type: string
+
+  
+          
+ 
+        
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+# basePath: /WPI3/CardMaker/v1.0
+schemes:
+ - https
+# Added by API Auto Mocking Plugin
+basePath: /beichen-xing/AddText/1.0.0
