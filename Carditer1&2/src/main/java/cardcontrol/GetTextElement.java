@@ -6,24 +6,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.LambdaLogger;
-import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
-import com.google.gson.Gson;
-
 import db.GiftCardDAO;
 import db.TextElementDAO;
-import http.GetCardRequest;
-import http.GetCardResponse;
+import http.GetTextRequest;
+import http.GetTextResponse;
 import model.Card;
 import model.TextElement;
 
@@ -35,7 +26,7 @@ public class GetTextElement {
 	LambdaLogger logger;
 
 	TextElement GetTextFromRDS(String id) throws Exception {
-		if (logger != null) { logger.log("in loadCard"); }
+		if (logger != null) { logger.log("in loadText"); }
 		TextElementDAO dao = new TextElementDAO();
 		TextElement textElement = dao.getText(id);
 		return textElement;
@@ -67,7 +58,7 @@ public class GetTextElement {
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 
-		GetCardResponse response = null;
+		GetTextResponse response = null;
 
 		
 		String body;
@@ -84,14 +75,14 @@ public class GetTextElement {
 			}
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
-			response = new GetCardResponse(422);  
+			response = new GetTextResponse(422);  
 			responseJson.put("body", new Gson().toJson(response));
 			processed = true;
 			body = null;
 		}
 
 		if (!processed) {
-			GetCardRequest req = new Gson().fromJson(body, GetCardRequest.class);
+			GetTextRequest req = new Gson().fromJson(body, GetTextRequest.class);
 			logger.log(req.toString());
 
 			boolean fail = false;

@@ -50,6 +50,12 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="Color">
+          <el-select v-model="addTextForm.color" placeholder="please choose a color">
+            <el-option label="red" value="red"></el-option>
+            <el-option label="black" value="black"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="Page">
           <el-select v-model="addTextForm.page" placeholder="please choose a page">
             <el-option label="Front page" value="Front page"></el-option>
@@ -96,34 +102,34 @@ export default {
         }
       ],
       addTextForm: {
+        text_id: "",
         id: "",
-        color: "",
-        card_id: "",
         content: "",
         page: "",
         font: "",
         bounds: "",
-        size: ""
+        size: "",
+        color: ""
       },
       emptyTextForm: {
         id: "",
-        color: "",
         card_id: "",
         Text: "",
         Page: "",
         Font: "",
         Bounds: "",
-        size: ""
+        size: "",
+        color: ""
       },
       currentTextForm: {
         id: "",
-        color: "",
         card_id: "",
         content: "",
         page: "",
         font: "",
         bounds: "",
-        size: ""
+        size: "",
+        color: ""
       },
       currentCardForm: {
         id: "",
@@ -156,11 +162,12 @@ export default {
     },
     addText() {
       this.showAddTextDialog = false;
-      this.addTextForm.id = uuid.v4();
+      this.addTextForm.id = this.card_id;
+      this.addTextForm.text_id = uuid.v4();
       console.log(this.addCardForm);
       this.$http
         .post(
-          "https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/addText",
+          "https://ek3pq12jz9.execute-api.us-east-2.amazonaws.com/beta/AddText",
           {
             headers: {
               "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
@@ -191,7 +198,7 @@ export default {
       console.log(this.addCardForm);
       this.$http
         .post(
-          "https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/addText",
+          "https://zuqelizuwb.execute-api.us-east-2.amazonaws.com/alpha/delText",
           {
             headers: {
               "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",

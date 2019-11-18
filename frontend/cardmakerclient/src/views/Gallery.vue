@@ -32,7 +32,7 @@
         </div>
         <p>To:{{card.recipient}}</p>
         <p>type:{{card.type}}</p>
-        <p>oritentation:{{card.oritentation}}</p>
+        <p>orientation:{{card.orientation}}</p>
       </el-card>
     </div>
     <!-- add dialog -->
@@ -93,14 +93,14 @@ export default {
         name: "",
         recipient: "",
         type: "",
-        oritentation: ""
+        orientation: ""
       },
       emptyForm: {
         id: "",
         name: "",
         recipient: "",
         type: "",
-        oritentation: ""
+        orientation: ""
       },
       formLabelWidth: "10vw"
       // isSelectedGallery: [],
