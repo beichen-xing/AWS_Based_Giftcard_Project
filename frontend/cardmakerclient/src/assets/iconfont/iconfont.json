@@ -1,0 +1,37 @@
+{
+  "id": "1497660",
+  "name": "wip",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1691881",
+      "name": "加号",
+      "font_class": "add",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "2970894",
+      "name": "施工中",
+      "font_class": "under-dev",
+      "unicode": "e82c",
+      "unicode_decimal": 59436
+    },
+    {
+      "icon_id": "11594376",
+      "name": "编辑",
+      "font_class": "edit",
+      "unicode": "e6ab",
+      "unicode_decimal": 59051
+    },
+    {
+      "icon_id": "11594441",
+      "name": "删除",
+      "font_class": "delete",
+      "unicode": "e6c0",
+      "unicode_decimal": 59072
+    }
+  ]
+}

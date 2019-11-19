@@ -3,8 +3,6 @@ package db;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import edu.wpi.cs.heineman.calculator.model.Constant;
 import model.Card;
 
 

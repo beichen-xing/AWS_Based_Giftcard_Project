@@ -1,0 +1,36 @@
+/* el-menu */
+.el-menu.el-menu--horizontal {
+    border: none 0;
+}
+
+.el-menu {
+    background: #000;
+}
+
+.el-menu-item:focus,
+.el-menu-item:hover {
+    color: #fff;
+    background: #000
+}
+
+
+.el-menu--horizontal>.el-menu-item.is-active .el-menu--horizontal>.el-menu-item:not(.is-disabled):focus,
+.el-menu--horizontal>.el-menu-item:not(.is-disabled):hover,
+.el-menu--horizontal>.el-submenu .el-submenu__title:hover {
+    background: #000;
+}
+
+.el-menu--horizontal>.el-menu-item:not(.is-disabled):focus,
+.el-menu--horizontal>.el-menu-item:not(.is-disabled):hover,
+.el-menu--horizontal>.el-submenu .el-submenu__title:hover,
+.el-menu-item:focus,
+.el-menu-item:hover .el-menu--horizontal>.el-menu-item.is-active {
+    color: #fff;
+    background: #000;
+}
+
+.el-menu--horizontal>.el-menu-item.is-active {
+    color: #fff;
+    background: #000;
+}
+
