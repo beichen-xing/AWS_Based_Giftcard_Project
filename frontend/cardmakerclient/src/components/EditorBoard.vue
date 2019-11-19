@@ -3,24 +3,43 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>Card ID:{{this.card_id}}</span>
-        <el-button class="menu" type="text" @click="showAddTextDialog = true">Add Text</el-button>
-        <el-button class="menu" type="text">Add Image</el-button>
-        <el-button class="menu" type="text">Display Card</el-button>
+        <el-button-group class="menu">
+          <el-button type="primary" round @click="showAddTextDialog = true">Add Text</el-button>
+          <el-button type="primary" round>Add Image</el-button>
+          <el-button type="primary" round @click="displayCard">Display Card</el-button>
+        </el-button-group>
       </div>
 
       <div>
+        <span>Text Elements</span>
         <div class="Element" v-for="(text,index) in texts" :key="index">
           <span>{{text.content}}</span>
-          <el-button class="card-action-btn" type="text" @click="delCard(card.id)">
+          <span>{{text.page}}</span>
+          <el-button class="card-action-btn" type="text" @click="delText(text.text_id)">
+            <i class="el-icon-delete"></i>
+          </el-button>
+        </div>
+      </div>
+
+      <div>
+        <span>Images Elements</span>
+        <div class="Element" v-for="(image,index) in images" :key="index">
+          <span>{{image.content}}</span>
+          <el-button class="card-action-btn" type="text" @click="delText(text.id)">
             <i class="el-icon-delete"></i>
           </el-button>
         </div>
       </div>
     </el-card>
 
-    <div class="canvas" :visible.sync="displayCardSwitch">
+    <div class="Canvas" :visible.sync="displayCardSwitch">
       <div>First Page</div>
-      <canvas id="frontPage" width="900" height="900" style="border:1px solid #ffff;"></canvas>
+      <canvas
+        id="frontPage"
+        width="900"
+        height="900"
+        style="border:1px solid #ffff; background-color: ivory"
+      ></canvas>
     </div>
 
     <el-dialog
@@ -85,22 +104,8 @@ export default {
     return {
       showAddTextDialog: false,
       displayCardSwitch: false,
-      texts: [
-        {
-          id: "1",
-          content: "Text1",
-          size: "32px",
-          font: "Arial",
-          bounds: "400,500"
-        },
-        {
-          id: "2",
-          content: "Text2",
-          size: "32",
-          font: "Arial",
-          bounds: "10,50"
-        }
-      ],
+      texts: [],
+      images: [],
       addTextForm: {
         text_id: "",
         id: "",
@@ -136,7 +141,7 @@ export default {
         name: "",
         recipient: "",
         type: "",
-        oritentation: ""
+        orientation: ""
       },
       card_id: ""
     };
@@ -149,14 +154,38 @@ export default {
     displayCard() {
       this.displayCardSwitch = true;
       var canvas = document.getElementById("frontPage");
+      if (this.currentCardForm.orientation == "Landscape") {
+        canvas.width = 900;
+        canvas.height = 600;
+      } else {
+        canvas.width = 600;
+        canvas.height = 900;
+      }
 
-      var ctx = canvasElement.getContext("2d");
-      for (j = 0; j < texts.length; j++) {
-        ctx.font = text[j].size + " " + text[j].font;
-        var bound = text[j].bounds.split(",");
-        var boundx = parseInt(bounds[0]);
-        var boundy = parseInt(bounds[1]);
-        ctx.fileText(text[j].content, boundx, boundy);
+      var ctx = canvas.getContext("2d");
+
+      function drawText(content, centerX, centerY, size, font, color) {
+        ctx.save();
+        ctx.font = size + "px " + font;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = color;
+        ctx.fillText(content, centerX, centerY);
+        ctx.restore();
+      }
+      for (var j = 0; j < this.texts.length; j++) {
+        var bound = this.texts[j].bounds.split(",");
+        var boundx = parseInt(bound[0]);
+        var boundy = parseInt(bound[1]);
+        drawText(
+          this.texts[j].content,
+          boundx,
+          boundy,
+          this.texts[j].size,
+          this.texts[j].font,
+          this.texts[j].color
+        );
+        console.log(this.texts[j]);
         console.log("Text showed!");
       }
     },
@@ -167,7 +196,7 @@ export default {
       console.log(this.addCardForm);
       this.$http
         .post(
-          "https://ek3pq12jz9.execute-api.us-east-2.amazonaws.com/beta/AddText",
+          "https://nkbemx30yf.execute-api.us-east-2.amazonaws.com/beta/AddText",
           {
             headers: {
               "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
@@ -186,7 +215,7 @@ export default {
             type: "success"
           });
           this.addTextForm = JSON.parse(JSON.stringify(this.emptyTextForm));
-          this.getCard(this.card_id);
+          this.listText(this.card_id);
         })
         .catch(err => {
           this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
@@ -194,11 +223,43 @@ export default {
         });
     },
     delText(id) {
-      this.showAddTextDialog = false;
-      console.log(this.addCardForm);
+      this.$confirm("Are you sure to delete", {
+        confirmButtonText: "Confirm",
+        cancelButtonText: "Cancel",
+        type: "warning"
+      }).then(() => {
+        //console.log(id);
+        this.$http
+          .post(
+            `https://nkbemx30yf.execute-api.us-east-2.amazonaws.com/beta/delText`,
+            {
+              headers: {
+                "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
+                "cache-control": "no-cache",
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json"
+              }
+            },
+            {
+              data: {
+                id: id
+              }
+            }
+          )
+          .then(() => {
+            this.$message({
+              type: "success",
+              message: "The text element is deleted!"
+            });
+            this.listText(this.card_id);
+          })
+          .catch(err => console.log(err));
+      });
+    },
+    listText(id) {
       this.$http
         .post(
-          "https://zuqelizuwb.execute-api.us-east-2.amazonaws.com/alpha/delText",
+          "https://43rbvpu0bj.execute-api.us-east-2.amazonaws.com/beta/ListAllTexts",
           {
             headers: {
               "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
@@ -213,13 +274,8 @@ export default {
             }
           }
         )
-        .then(() => {
-          this.$message({
-            message: "Congrats,a new card is added",
-            type: "success"
-          });
-          this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
-          this.getCard(this.card_id);
+        .then(res => {
+          this.texts = JSON.parse(JSON.stringify(res.data.list));
         })
         .catch(err => {
           this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
@@ -281,6 +337,7 @@ export default {
   },
   created() {
     this.card_id = this.$route.query.id;
+    this.listText(this.card_id);
     this.getCard(this.$route.query.id);
   }
 };
@@ -290,6 +347,12 @@ export default {
 .board {
   border: 1px solid #ffff;
 }
+
+span {
+  font-weight: bold;
+  font-size: 16px;
+}
+
 .page {
   height: 900px;
   width: 600px;
@@ -297,10 +360,20 @@ export default {
 }
 
 .menu {
-  margin-left: 10px;
+  margin-left: 30px;
 }
 
 .Element {
   margin-left: 20px;
+}
+
+.box-card {
+  width: 1000px;
+  margin: 0 auto;
+  box-shadow: #fff 0px 1px 6px;
+}
+
+.Canvas {
+  text-align: center;
 }
 </style>
