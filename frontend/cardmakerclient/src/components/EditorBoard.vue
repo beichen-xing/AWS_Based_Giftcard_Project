@@ -67,6 +67,27 @@
               value="Times New Roman
                 "
             ></el-option>
+            <el-option
+              label="Comic Sans MS
+                "
+              value="Comic Sans MS
+                "
+            ></el-option>
+            <el-option label="Monaco
+                " value="Monaco
+                "></el-option>
+            <el-option
+              label="Brush Script MT
+                "
+              value="Brush Script MT
+                "
+            ></el-option>
+            <el-option
+              label="Lucida Bright
+                "
+              value="Lucida Bright
+                "
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="Color">
