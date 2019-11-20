@@ -5,7 +5,7 @@
         <span>Card ID:{{this.card_id}}</span>
         <el-button-group class="menu">
           <el-button type="primary" round @click="showAddTextDialog = true">Add Text</el-button>
-          <el-button type="primary" round>Add Image</el-button>
+          <el-button type="primary" round @click="showAddImageDialog = true">Add Image</el-button>
           <el-button type="primary" round @click="displayCard">Display Card</el-button>
         </el-button-group>
       </div>
@@ -32,7 +32,7 @@
       </div>
     </el-card>
 
-    <div class="Canvas" :visible.sync="displayCardSwitch">
+    <div class="Canvas" :visible.sync="this.displayCardSwitch">
       <div>First Page</div>
       <canvas
         id="frontPage"
@@ -110,6 +110,27 @@
         <el-button type="primary" @click="addText()">Add</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog
+      title="Add a new Image Element"
+      :visible.sync="showAddImageDialog"
+      :close-on-click-modal="false"
+    >
+      <el-upload
+        class="upload-demo"
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        multiple
+        :limit="3"
+        :on-exceed="handleExceed"
+        :file-list="fileList"
+      >
+        <el-button size="small" type="primary">Click to upload</el-button>
+        <div slot="tip" class="el-upload__tip">jpg/png files with a size less than 500kb</div>
+      </el-upload>
+    </el-dialog>
   </div>
 </template>
 
@@ -125,6 +146,7 @@ export default {
     return {
       showAddTextDialog: false,
       displayCardSwitch: false,
+      showAddImageDialog: false,
       texts: [],
       images: [],
       addTextForm: {
@@ -206,8 +228,8 @@ export default {
           this.texts[j].font,
           this.texts[j].color
         );
-        console.log(this.texts[j]);
-        console.log("Text showed!");
+        //console.log(this.texts[j]);
+        //console.log("Text showed!");
       }
     },
     addText() {
