@@ -20,7 +20,7 @@
           <el-button class="card-action-btn" type="text" @click="generateLink(card.id)">
             <i class="el-icon-share"></i>
           </el-button>
-          <el-button class="card-action-btn" type="text" @click="displayCard(card.id)">
+          <el-button class="card-action-btn" type="text" @click="previewCard(card.id)">
             <i class="el-icon-view"></i>
           </el-button>
           <el-button class="card-action-btn" type="text" @click="duplicateCard(card.id)">
@@ -195,6 +195,14 @@ export default {
     editCard(id) {
       this.$router.push({
         path: "Editor",
+        query: {
+          id: id
+        }
+      });
+    },
+    previewCard(id) {
+      this.$router.push({
+        path: "CardPreview",
         query: {
           id: id
         }

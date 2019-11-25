@@ -1,7 +1,8 @@
 <template>
   <div class="canvas">
-    <div>First Page</div>
-    <canvas id="frontPage" width="900" height="900" style="border:1px solid #ffff;"></canvas>
+    Text
+    <!-- <div>First Page</div>
+    <canvas id="frontPage" width="900" height="900" style="border:1px solid #ffff;"></canvas>-->
   </div>
 </template>
 

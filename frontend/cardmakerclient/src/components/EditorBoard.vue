@@ -5,7 +5,7 @@
         <span>Card ID:{{this.card_id}}</span>
         <el-button-group class="menu">
           <el-button type="primary" round @click="showAddTextDialog = true">Add Text</el-button>
-          <el-button type="primary" round>Add Image</el-button>
+          <el-button type="primary" round @click="showAddImageDialog = true">Add Image</el-button>
           <el-button type="primary" round @click="displayCard">Display Card</el-button>
         </el-button-group>
       </div>
@@ -24,7 +24,7 @@
       <div>
         <span>Images Elements</span>
         <div class="Element" v-for="(image,index) in images" :key="index">
-          <span>{{image.content}}</span>
+          <span>{{image.name}}</span>
           <el-button class="card-action-btn" type="text" @click="delText(text.id)">
             <i class="el-icon-delete"></i>
           </el-button>
@@ -32,7 +32,7 @@
       </div>
     </el-card>
 
-    <div class="Canvas" :visible.sync="displayCardSwitch">
+    <div class="Canvas" :visible.sync="this.displayCardSwitch">
       <div>First Page</div>
       <canvas
         id="frontPage"
@@ -67,6 +67,27 @@
               value="Times New Roman
                 "
             ></el-option>
+            <el-option
+              label="Comic Sans MS
+                "
+              value="Comic Sans MS
+                "
+            ></el-option>
+            <el-option label="Monaco
+                " value="Monaco
+                "></el-option>
+            <el-option
+              label="Brush Script MT
+                "
+              value="Brush Script MT
+                "
+            ></el-option>
+            <el-option
+              label="Lucida Bright
+                "
+              value="Lucida Bright
+                "
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="Color">
@@ -89,6 +110,27 @@
         <el-button type="primary" @click="addText()">Add</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog
+      title="Add a new Image Element"
+      :visible.sync="showAddImageDialog"
+      :close-on-click-modal="false"
+    >
+      <el-upload
+        class="upload-demo"
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        multiple
+        :limit="3"
+        :on-exceed="handleExceed"
+        :file-list="fileList"
+      >
+        <el-button size="small" type="primary">Click to upload</el-button>
+        <div slot="tip" class="el-upload__tip">jpg/png files with a size less than 500kb</div>
+      </el-upload>
+    </el-dialog>
   </div>
 </template>
 
@@ -104,6 +146,7 @@ export default {
     return {
       showAddTextDialog: false,
       displayCardSwitch: false,
+      showAddImageDialog: false,
       texts: [],
       images: [],
       addTextForm: {
@@ -185,8 +228,8 @@ export default {
           this.texts[j].font,
           this.texts[j].color
         );
-        console.log(this.texts[j]);
-        console.log("Text showed!");
+        //console.log(this.texts[j]);
+        //console.log("Text showed!");
       }
     },
     addText() {
@@ -307,38 +350,39 @@ export default {
           //this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
           this.$message.error(err);
         });
+    },
+    getText(id) {
+      this.$http
+        .post(
+          "https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/getText",
+          {
+            headers: {
+              "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
+              "cache-control": "no-cache",
+              "Access-Control-Allow-Origin": "*",
+              "Content-Type": "application/json"
+            }
+          },
+          {
+            data: {
+              id: id
+            }
+          }
+        )
+        .then(res => {
+          this.currentTextForm = JSON.parse(JSON.stringify(res.data));
+        })
+        .catch(err => {
+          //this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
+          this.$message.error(err);
+        });
     }
-  },
-  getText(id) {
-    this.$http
-      .post(
-        "https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/getText",
-        {
-          headers: {
-            "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
-            "cache-control": "no-cache",
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json"
-          }
-        },
-        {
-          data: {
-            id: id
-          }
-        }
-      )
-      .then(res => {
-        this.currentTextForm = JSON.parse(JSON.stringify(res.data));
-      })
-      .catch(err => {
-        //this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
-        this.$message.error(err);
-      });
   },
   created() {
     this.card_id = this.$route.query.id;
     this.listText(this.card_id);
     this.getCard(this.$route.query.id);
+    //console.log("Editor");
   }
 };
 </script>
