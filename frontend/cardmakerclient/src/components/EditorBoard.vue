@@ -24,7 +24,7 @@
       <div>
         <span>Images Elements</span>
         <div class="Element" v-for="(image,index) in images" :key="index">
-          <span>{{image.content}}</span>
+          <span>{{image.name}}</span>
           <el-button class="card-action-btn" type="text" @click="delText(text.id)">
             <i class="el-icon-delete"></i>
           </el-button>
@@ -350,38 +350,39 @@ export default {
           //this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
           this.$message.error(err);
         });
+    },
+    getText(id) {
+      this.$http
+        .post(
+          "https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/getText",
+          {
+            headers: {
+              "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
+              "cache-control": "no-cache",
+              "Access-Control-Allow-Origin": "*",
+              "Content-Type": "application/json"
+            }
+          },
+          {
+            data: {
+              id: id
+            }
+          }
+        )
+        .then(res => {
+          this.currentTextForm = JSON.parse(JSON.stringify(res.data));
+        })
+        .catch(err => {
+          //this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
+          this.$message.error(err);
+        });
     }
-  },
-  getText(id) {
-    this.$http
-      .post(
-        "https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/getText",
-        {
-          headers: {
-            "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
-            "cache-control": "no-cache",
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json"
-          }
-        },
-        {
-          data: {
-            id: id
-          }
-        }
-      )
-      .then(res => {
-        this.currentTextForm = JSON.parse(JSON.stringify(res.data));
-      })
-      .catch(err => {
-        //this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
-        this.$message.error(err);
-      });
   },
   created() {
     this.card_id = this.$route.query.id;
     this.listText(this.card_id);
     this.getCard(this.$route.query.id);
+    //console.log("Editor");
   }
 };
 </script>

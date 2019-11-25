@@ -4,11 +4,10 @@ import Router from "vue-router";
 Vue.use(Router);
 
 export default new Router({
-  routes: [
-    {
+  routes: [{
       path: "/",
       name: "home",
-      component: () => import(/* webpackChunkName: "about" */ "./views/Home")
+      component: () => import( /* webpackChunkName: "about" */ "./views/Home")
     },
     {
       path: "/about",
@@ -16,7 +15,7 @@ export default new Router({
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ "./views/About")
+      component: () => import( /* webpackChunkName: "about" */ "./views/About")
     },
     {
       path: "/editor",
@@ -24,7 +23,15 @@ export default new Router({
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "Editor" */ "./views/Editor")
+      component: () => import( /* webpackChunkName: "Editor" */ "./views/Editor")
+    },
+    {
+      path: "/preview",
+      name: "CardPreview",
+      // route level code-splitting
+      // this generates a separate chunk (about.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import( /* webpackChunkName: "Editor" */ "./views/CardPreview")
     },
     {
       path: "/gallery",
@@ -33,7 +40,7 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () =>
-        import(/* webpackChunkName: "Gallery" */ "./views/Gallery")
+        import( /* webpackChunkName: "Gallery" */ "./views/Gallery")
     }
   ]
 });
