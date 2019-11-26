@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- <div>
+    <div>
       <span>First Page</span>
       <canvas
         id="frontPage"
@@ -8,7 +8,8 @@
         height="900"
         style="border:1px solid #ffff; background-color: ivory"
       ></canvas>
-
+    </div>
+    <div>
       <span>Inner Left Page</span>
       <canvas
         id="leftPage"
@@ -32,7 +33,7 @@
         height="900"
         style="border:1px solid #ffff; background-color: ivory"
       ></canvas>
-    </div>-->
+    </div>
   </div>
 </template>
 

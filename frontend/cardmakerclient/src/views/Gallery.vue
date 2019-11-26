@@ -194,7 +194,7 @@ export default {
 
     editCard(id) {
       this.$router.push({
-        path: "Editor",
+        path: "/editor",
         query: {
           id: id
         }
@@ -202,7 +202,7 @@ export default {
     },
     previewCard(id) {
       this.$router.push({
-        path: "CardPreview",
+        path: "/preview",
         query: {
           id: id
         }

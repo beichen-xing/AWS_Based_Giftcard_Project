@@ -116,20 +116,37 @@
       :visible.sync="showAddImageDialog"
       :close-on-click-modal="false"
     >
+      <el-form :model="addImageForm" ref="addTextForm">
+        <el-form-item label="Bounds">
+          <el-input v-model="addImageForm.bounds" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="Page">
+          <el-select v-model="addImageForm.page" placeholder="please choose a page">
+            <el-option label="Front page" value="Front page"></el-option>
+            <el-option label="Inner left page" value="Inner Left page"></el-option>
+            <el-option label="Inner right page" value="Inner right page"></el-option>
+            <el-option label="Back page" value="Back page"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
       <el-upload
         class="upload-demo"
         action="https://jsonplaceholder.typicode.com/posts/"
         :on-preview="handlePreview"
         :on-remove="handleRemove"
-        :before-remove="beforeRemove"
-        multiple
-        :limit="3"
-        :on-exceed="handleExceed"
         :file-list="fileList"
+        :limit="1"
+        list-type="picture"
+        :on-change="getFile"
       >
-        <el-button size="small" type="primary">Click to upload</el-button>
-        <div slot="tip" class="el-upload__tip">jpg/png files with a size less than 500kb</div>
+        <el-button size="small" type="primary">Upload</el-button>
+        <div slot="tip" class="el-upload__tip">only supports jpg/png files，and size limit is 500kb</div>
       </el-upload>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeAddImage()">Cancel</el-button>
+        <el-button type="primary" @click="addImage()">Add</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -149,6 +166,8 @@ export default {
       showAddImageDialog: false,
       texts: [],
       images: [],
+      imagefiles: [],
+      fileList: [],
       addTextForm: {
         text_id: "",
         id: "",
@@ -168,6 +187,27 @@ export default {
         Bounds: "",
         size: "",
         color: ""
+      },
+      emptyImageForm: {
+        image_id: "",
+        card_id: "",
+        Page: "",
+        Content: "",
+        Bounds: ""
+      },
+      addImageForm: {
+        image_id: "",
+        card_id: "",
+        page: "",
+        content: "",
+        bounds: ""
+      },
+      currentImageForm: {
+        image_id: "",
+        card_id: "",
+        Page: "",
+        Content: "",
+        Bounds: ""
       },
       currentTextForm: {
         id: "",
@@ -190,9 +230,48 @@ export default {
     };
   },
   methods: {
+    getFile(file, fileList) {
+      console.log(file.raw);
+      this.getBase64(file.raw).then(res => {
+        this.addImageForm.content = res;
+        console.log(res);
+      });
+      this.addImageForm.image_id = file.uid;
+    },
+    getBase64(file) {
+      return new Promise(function(resolve, reject) {
+        let reader = new FileReader();
+        let imgResult = "";
+        reader.readAsDataURL(file);
+        reader.onload = function() {
+          imgResult = reader.result;
+        };
+        reader.onerror = function(error) {
+          reject(error);
+        };
+        reader.onloadend = function() {
+          resolve(imgResult);
+        };
+      });
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
     closeAddText() {
       this.showAddTextDialog = false;
       this.addTextForm = JSON.parse(JSON.stringify(this.emptyTextForm));
+    },
+    closeImageText() {
+      this.showAddImageDialog = false;
+      //this.addImageForm = JSON.parse(JSON.stringify(this.emptyImageForm));
+    },
+    addImage() {
+      this.addImageForm.card_id = this.card_id;
+      console.log(this.addImageForm);
+      this.showAddImageDialog = false;
     },
     displayCard() {
       this.displayCardSwitch = true;
