@@ -8,7 +8,7 @@ import org.json.simple.parser.ParseException;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.amazonaws.services.lambda.runtime.events.S3Event;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -21,7 +21,7 @@ import http.DeleteImageRequest;
 import http.DeleteImageResponse;
 import model.Card;
 
-public class DeleteImageElement implements RequestHandler {
+public class DeleteImageElement implements RequestStreamHandler {
 
     public LambdaLogger logger =null;
 

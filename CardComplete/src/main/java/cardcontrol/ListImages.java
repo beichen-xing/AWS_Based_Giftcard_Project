@@ -5,6 +5,10 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -13,7 +17,9 @@ import com.amazonaws.services.lambda.runtime.events.S3Event;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.google.gson.Gson;
 
 import http.ListImagesResponse;
@@ -22,16 +28,36 @@ import db.ImageElementDAO;
 import model.ImageElement;
 
 public class ListImages implements RequestStreamHandler {
+	
+	private AmazonS3 s3 = null;
+	
+	ObjectListing imageList;
+	List<S3ObjectSummary> images;
+	List<String> getImages() throws Exception{
+		List<String> imageURL = null;
+		if (s3 == null) {
+			s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_2).build();
+		}
+		imageList = s3.listObjects("cs509finalinteration");
+		images=imageList.getObjectSummaries();
+		for(S3ObjectSummary s: images)
+		{
+			String key;
+			key=s.getKey();
+			imageURL.add("https://cs509finalinteration.s3.us-east-2.amazonaws.com/cs509finalinteration/"+key);
+		}
+		return imageURL;
+	}
 
 /*====================Load all images from RDS========================*/	
 	public LambdaLogger logger = null;
 
-	List<ImageElement> getImages() throws Exception {
+/*	List<ImageElement> getImages() throws Exception {
 		if (logger != null) { logger.log("in getImages"); }
 		ImageElementDAO dao = new ImageElementDAO();
 		
 		return dao.ListImages();
-	}
+	}*/
 	
 	
 /*======================Response a JSON file==================================*/		
@@ -50,7 +76,7 @@ public class ListImages implements RequestStreamHandler {
 
 		ListImagesResponse response;
 		try {
-			List<ImageElement> list = getImages();
+			List<String> list = getImages();
 			response = new ListImagesResponse(list, 200);
 		} catch (Exception e) {
 			response = new ListImagesResponse(403, e.getMessage());
