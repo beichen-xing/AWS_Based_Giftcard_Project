@@ -23,7 +23,7 @@
           <el-button class="card-action-btn" type="text" @click="previewCard(card.id)">
             <i class="el-icon-view"></i>
           </el-button>
-          <el-button class="card-action-btn" type="text" @click="duplicateCard(card.id)">
+          <el-button class="card-action-btn" type="text" @click="showDuplicateCard(card.id)">
             <i class="el-icon-document-copy"></i>
           </el-button>
           <el-button class="card-action-btn" type="text" @click="delCard(card.id)">
@@ -67,6 +67,24 @@
         <el-button type="primary" @click="addCard()">Add</el-button>
       </span>
     </el-dialog>
+    <!-- dublicate dialog -->
+    <el-dialog
+      title="Duplicate a card"
+      :visible.sync="showDuplicateDialog"
+      :close-on-click-modal="false"
+    >
+      <el-form :model="duplicateCardForm" ref="addCardForm">
+        <el-form-item label="ID" :label-width="formLabelWidth">{{this.duplicateCardForm.id}}</el-form-item>
+        <el-form-item label="new ID" :label-width="formLabelWidth">{{this.duplicateCardForm.newid}}</el-form-item>
+        <el-form-item label="Recipient" :label-width="formLabelWidth">
+          <el-input v-model="duplicateCardForm.recipient" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeDuplicate()">Cancel</el-button>
+        <el-button type="primary" @click="duplicateCard()">Add</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -85,6 +103,7 @@ export default {
     return {
       showAddDialog: false,
       isCardViewLoading: true,
+      showDuplicateDialog: false,
       // showCards: true,
       // showInputs: false,
       cards: [],
@@ -94,6 +113,11 @@ export default {
         recipient: "",
         type: "",
         orientation: ""
+      },
+      duplicateCardForm: {
+        id: "",
+        recipient: "",
+        newid: ""
       },
       emptyForm: {
         id: "",
@@ -191,7 +215,6 @@ export default {
           .catch(err => console.log(err));
       });
     },
-
     editCard(id) {
       this.$router.push({
         path: "/editor",
@@ -206,6 +229,46 @@ export default {
         query: {
           id: id
         }
+      });
+    },
+    showDuplicateCard(id) {
+      this.showDuplicateDialog = true;
+      this.duplicateCardForm.id = id;
+      this.duplicateCardForm.newid = uuid.v4();
+    },
+    closeDuplicate() {
+      this.showDuplicateDialog = false;
+    },
+    duplicateCard() {
+      this.$confirm("Are you sure to duplicate?", {
+        confirmButtonText: "Confirm",
+        cancelButtonText: "Cancel",
+        type: "warning"
+      }).then(() => {
+        this.showDuplicateDialog = false;
+        this.$http
+          .post(
+            "https://r6m8zn2okh.execute-api.us-east-2.amazonaws.com/beta/duplicateCard",
+            {
+              headers: {
+                "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
+                "cache-control": "no-cache",
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json"
+              }
+            },
+            {
+              data: this.duplicateCardForm
+            }
+          )
+          .then(() => {
+            this.$message({
+              type: "success",
+              message: "The card is duplicated!"
+            });
+            this.getCards();
+          })
+          .catch(err => console.log(err));
       });
     }
   },
