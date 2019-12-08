@@ -14,7 +14,11 @@
         <span>Text Elements</span>
         <div class="Element" v-for="(text,index) in texts" :key="index">
           <span>{{text.content}}</span>
+          <span>,</span>
           <span>{{text.page}}</span>
+          <el-button class="card-action-btn" type="text" @click="showEditText(text.text_id)">
+            <i class="el-icon-edit"></i>
+          </el-button>
           <el-button class="card-action-btn" type="text" @click="delText(text.text_id)">
             <i class="el-icon-delete"></i>
           </el-button>
@@ -25,6 +29,8 @@
         <span>Images Elements</span>
         <div class="Element" v-for="(image,index) in images" :key="index">
           <span>{{image.name}}</span>
+          <span>,</span>
+          <span>{{image.page}}</span>
           <el-button class="card-action-btn" type="text" @click="delText(text.id)">
             <i class="el-icon-delete"></i>
           </el-button>
@@ -33,9 +39,30 @@
     </el-card>
 
     <div class="Canvas" :visible.sync="this.displayCardSwitch">
-      <div>First Page</div>
+      <div>Front Page</div>
       <canvas
         id="frontPage"
+        width="900"
+        height="900"
+        style="border:1px solid #ffff; background-color: ivory"
+      ></canvas>
+      <div>Back Page</div>
+      <canvas
+        id="backPage"
+        width="900"
+        height="900"
+        style="border:1px solid #ffff; background-color: ivory"
+      ></canvas>
+      <div>Inner left Page</div>
+      <canvas
+        id="leftPage"
+        width="900"
+        height="900"
+        style="border:1px solid #ffff; background-color: ivory"
+      ></canvas>
+      <div>Inner right Page</div>
+      <canvas
+        id="rightPage"
         width="900"
         height="900"
         style="border:1px solid #ffff; background-color: ivory"
@@ -112,6 +139,76 @@
     </el-dialog>
 
     <el-dialog
+      title="Edit a Text Element"
+      :visible.sync="showEditTextDialog"
+      :close-on-click-modal="false"
+    >
+      <el-form :model="editTextForm" ref="editTextForm">
+        <el-form-item label="content">
+          <el-input type="textarea" v-model="editTextForm.content" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="Size">
+          <el-input v-model="editTextForm.size" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="Bounds">
+          <el-input v-model="editTextForm.bounds" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="Font">
+          <el-select v-model="editTextForm.font" placeholder="please choose a font">
+            <el-option label="Helvetica" value="Helvetica"></el-option>
+            <el-option label="Arial" value="Arial"></el-option>
+            <el-option
+              label="Times New Roman
+                "
+              value="Times New Roman
+                "
+            ></el-option>
+            <el-option
+              label="Comic Sans MS
+                "
+              value="Comic Sans MS
+                "
+            ></el-option>
+            <el-option label="Monaco
+                " value="Monaco
+                "></el-option>
+            <el-option
+              label="Brush Script MT
+                "
+              value="Brush Script MT
+                "
+            ></el-option>
+            <el-option
+              label="Lucida Bright
+                "
+              value="Lucida Bright
+                "
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Color">
+          <el-select v-model="editTextForm.color" placeholder="please choose a color">
+            <el-option label="red" value="red"></el-option>
+            <el-option label="black" value="black"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Page">
+          <el-select v-model="editTextForm.page" placeholder="please choose a page">
+            <el-option label="Front page" value="Front page"></el-option>
+            <el-option label="Inner left page" value="Inner Left page"></el-option>
+            <el-option label="Inner right page" value="Inner right page"></el-option>
+            <el-option label="Back page" value="Back page"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeEditText()">Cancel</el-button>
+        <el-button type="primary" @click="editText()">Add</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- add image form -->
+    <el-dialog
       title="Add a new Image Element"
       :visible.sync="showAddImageDialog"
       :close-on-click-modal="false"
@@ -164,6 +261,7 @@ export default {
       showAddTextDialog: false,
       displayCardSwitch: false,
       showAddImageDialog: false,
+      showEditTextDialog: false,
       texts: [],
       images: [],
       imagefiles: [],
@@ -218,6 +316,26 @@ export default {
         bounds: "",
         size: "",
         color: ""
+      },
+      currentEditTextForm: {
+        content: "",
+        font: "",
+        bounds: "",
+        color: "",
+        size: "",
+        text_id: "",
+        card_id: "",
+        page: ""
+      },
+      editTextForm: {
+        content: "",
+        font: "",
+        bounds: "",
+        color: "",
+        size: "",
+        text_id: "",
+        card_id: "",
+        page: ""
       },
       currentCardForm: {
         id: "",
@@ -274,17 +392,37 @@ export default {
       this.showAddImageDialog = false;
     },
     displayCard() {
+      console.log("triggered");
       this.displayCardSwitch = true;
       var canvas = document.getElementById("frontPage");
+      var canvas_back = document.getElementById("backPage");
+      var canvas_left = document.getElementById("leftPage");
+      var canvas_right = document.getElementById("rightPage");
+
       if (this.currentCardForm.orientation == "Landscape") {
         canvas.width = 900;
         canvas.height = 600;
+        canvas_back.width = 900;
+        canvas_back.height = 600;
+        canvas_left.width = 900;
+        canvas_left.height = 600;
+        canvas_right.width = 900;
+        canvas_right.height = 600;
       } else {
         canvas.width = 600;
         canvas.height = 900;
+        canvas_back.width = 600;
+        canvas_back.height = 900;
+        canvas_left.width = 600;
+        canvas_left.height = 900;
+        canvas_right.width = 600;
+        canvas_right.height = 900;
       }
 
       var ctx = canvas.getContext("2d");
+      var ctx_back = canvas_back.getContext("2d");
+      var ctx_left = canvas_left.getContext("2d");
+      var ctx_right = canvas_right.getContext("2d");
 
       function drawText(content, centerX, centerY, size, font, color) {
         ctx.save();
@@ -295,20 +433,78 @@ export default {
         ctx.fillText(content, centerX, centerY);
         ctx.restore();
       }
+      function drawBackText(content, centerX, centerY, size, font, color) {
+        ctx_back.save();
+        ctx_back.font = size + "px " + font;
+        ctx_back.textAlign = "center";
+        ctx_back.textBaseline = "middle";
+        ctx_back.fillStyle = color;
+        ctx_back.fillText(content, centerX, centerY);
+        ctx_back.restore();
+      }
+      function drawLeftText(content, centerX, centerY, size, font, color) {
+        ctx_left.save();
+        ctx_left.font = size + "px " + font;
+        ctx_left.textAlign = "center";
+        ctx_left.textBaseline = "middle";
+        ctx_left.fillStyle = color;
+        ctx_left.fillText(content, centerX, centerY);
+        ctx_left.restore();
+      }
+      function drawRightText(content, centerX, centerY, size, font, color) {
+        ctx_right.save();
+        ctx_right.font = size + "px " + font;
+        ctx_right.textAlign = "center";
+        ctx_right.textBaseline = "middle";
+        ctx_right.fillStyle = color;
+        ctx_right.fillText(content, centerX, centerY);
+        ctx_right.restore();
+      }
       for (var j = 0; j < this.texts.length; j++) {
         var bound = this.texts[j].bounds.split(",");
         var boundx = parseInt(bound[0]);
         var boundy = parseInt(bound[1]);
-        drawText(
-          this.texts[j].content,
-          boundx,
-          boundy,
-          this.texts[j].size,
-          this.texts[j].font,
-          this.texts[j].color
-        );
-        //console.log(this.texts[j]);
-        //console.log("Text showed!");
+        console.log(this.texts[j].page);
+        if (this.texts[j].page == "Front page") {
+          drawText(
+            this.texts[j].content,
+            boundx,
+            boundy,
+            this.texts[j].size,
+            this.texts[j].font,
+            this.texts[j].color
+          );
+        }
+        if (this.texts[j].page == "Back page") {
+          drawBackText(
+            this.texts[j].content,
+            boundx,
+            boundy,
+            this.texts[j].size,
+            this.texts[j].font,
+            this.texts[j].color
+          );
+        }
+        if (this.texts[j].page == "Inner Left page") {
+          drawLeftText(
+            this.texts[j].content,
+            boundx,
+            boundy,
+            this.texts[j].size,
+            this.texts[j].font,
+            this.texts[j].color
+          );
+        }
+        if (this.texts[j].page == "Inner right page") {
+          drawRightText(
+            this.texts[j].content,
+            boundx,
+            boundy,
+            this.texts[j].size,
+            this.texts[j].font,
+            this.texts[j].color
+          );
+        }
       }
     },
     addText() {
@@ -344,6 +540,78 @@ export default {
           this.$message.error(err);
         });
     },
+    editText() {
+      this.showEditTextDialog = false;
+      console.log(this.editTextForm);
+      this.$http
+        .post(
+          "https://r6m8zn2okh.execute-api.us-east-2.amazonaws.com/beta/EditText",
+          {
+            headers: {
+              "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
+              "cache-control": "no-cache",
+              "Access-Control-Allow-Origin": "*",
+              "Content-Type": "application/json"
+            }
+          },
+          {
+            data: this.editTextForm
+          }
+        )
+        .then(() => {
+          this.$message({
+            message: "Congrats,text is modified",
+            type: "success"
+          });
+          this.addTextForm = JSON.parse(JSON.stringify(this.emptyTextForm));
+          this.listText(this.card_id);
+        })
+        .catch(err => {
+          //this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
+          this.$message.error(err);
+        });
+    },
+    closeEditText() {
+      this.showEditTextDialog = false;
+    },
+    showEditText(id) {
+      this.$http
+        .post(
+          "https://5u792g7yk2.execute-api.us-east-2.amazonaws.com/beta/getText",
+          {
+            headers: {
+              "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
+              "cache-control": "no-cache",
+              "Access-Control-Allow-Origin": "*",
+              "Content-Type": "application/json"
+            }
+          },
+          {
+            data: {
+              id: id
+            }
+          }
+        )
+        .then(res => {
+          this.currentEditTextForm = JSON.parse(JSON.stringify(res.data));
+          this.editTextForm.content = this.currentEditTextForm.content;
+          this.editTextForm.font = this.currentEditTextForm.font;
+          this.editTextForm.bounds = this.currentEditTextForm.bounds;
+          this.editTextForm.color = this.currentEditTextForm.color;
+          this.editTextForm.size = this.currentEditTextForm.size;
+          this.editTextForm.text_id = this.currentEditTextForm.text_id;
+          this.editTextForm.card_id = this.currentEditTextForm.card_id;
+          this.editTextForm.page = this.currentEditTextForm.page;
+        })
+        .then(() => {
+          this.showEditTextDialog = true;
+        })
+        .catch(err => {
+          this.$message.error(err);
+        });
+
+      console.log(this.currentTextForm);
+    },
     delText(id) {
       this.$confirm("Are you sure to delete", {
         confirmButtonText: "Confirm",
@@ -378,6 +646,40 @@ export default {
           .catch(err => console.log(err));
       });
     },
+    delImage(id) {
+      this.$confirm("Are you sure to delete", {
+        confirmButtonText: "Confirm",
+        cancelButtonText: "Cancel",
+        type: "warning"
+      }).then(() => {
+        //console.log(id);
+        this.$http
+          .post(
+            `https://r6m8zn2okh.execute-api.us-east-2.amazonaws.com/beta/DeleteImage`,
+            {
+              headers: {
+                "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
+                "cache-control": "no-cache",
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json"
+              }
+            },
+            {
+              data: {
+                id: id
+              }
+            }
+          )
+          .then(() => {
+            this.$message({
+              type: "success",
+              message: "The image element is deleted!"
+            });
+            this.listImages(this.card_id);
+          })
+          .catch(err => console.log(err));
+      });
+    },
     listText(id) {
       this.$http
         .post(
@@ -401,6 +703,32 @@ export default {
         })
         .catch(err => {
           this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
+          this.$message.error(err);
+        });
+    },
+    listImages(id) {
+      this.$http
+        .post(
+          "https://kays5p3a93.execute-api.us-east-2.amazonaws.com/beta/ListImageOfCard",
+          {
+            headers: {
+              "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
+              "cache-control": "no-cache",
+              "Access-Control-Allow-Origin": "*",
+              "Content-Type": "application/json"
+            }
+          },
+          {
+            data: {
+              id: id
+            }
+          }
+        )
+        .then(res => {
+          this.images = JSON.parse(JSON.stringify(res.data.list));
+        })
+        .catch(err => {
+          //this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
           this.$message.error(err);
         });
     },
@@ -433,7 +761,7 @@ export default {
     getText(id) {
       this.$http
         .post(
-          "https://smrii41wj7.execute-api.us-east-2.amazonaws.com/beta/getText",
+          "https://5u792g7yk2.execute-api.us-east-2.amazonaws.com/beta/getText",
           {
             headers: {
               "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
@@ -452,7 +780,6 @@ export default {
           this.currentTextForm = JSON.parse(JSON.stringify(res.data));
         })
         .catch(err => {
-          //this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
           this.$message.error(err);
         });
     }
