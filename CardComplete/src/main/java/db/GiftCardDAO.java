@@ -103,6 +103,23 @@ public class GiftCardDAO {
             throw new Exception("Failed to delete card: " + e.getMessage());
         }
 	}
+	
+	public boolean duplicateCard(String id, String recipient, String newid) throws Exception {
+		try {
+            PreparedStatement ps = conn.prepareStatement("Insert into Cards (card_id, card_name,recipient,event_type,orientation)" + 
+            		"select ?, card_name, ? , event_type, orientation from Cards where card_id = ?;");
+            ps.setString(1, newid);
+            ps.setString(2, recipient);
+            ps.setString(3, id);
+            int numAffected = ps.executeUpdate();
+            ps.close();
+            
+            return (numAffected == 1);
+
+        } catch (Exception e) {
+            throw new Exception("Failed to duplicate card: " + e.getMessage());
+        }
+	}
 
 	public boolean AddText(String id, String content, String font, String bounds, String color, String size, String text_id, String page) throws Exception {
 		  try {
@@ -116,6 +133,54 @@ public class GiftCardDAO {
 	            ps.setString(6, size);
 	            ps.setString(7, text_id);
 	            ps.setString(8, page);
+	            ps.execute();
+	            return true;
+	          
+	        } catch (Exception e) {
+	        	e.printStackTrace();
+	            throw new Exception("Failed in adding text: " + e.getMessage());
+	        }
+	}
+	
+	public boolean EditText(String content, String font, String bounds, String color, String size, String text_id,String card_id, String page) throws Exception {
+		  try {
+	            
+			  System.out.println(card_id);
+			  System.out.println(text_id);
+	            PreparedStatement ps = conn.prepareStatement("Update innodb.Texts "
+	            		+ "SET content = ?, font = ?, bounds = ?, color = ?, size = ?, page = ?,card_id = ? "
+	            		+ "WHERE text_id = ?");
+	            
+	            ps.setString(1, content);
+	            ps.setString(2, font);
+	            ps.setString(3, bounds);
+	            ps.setString(4, color);
+	            ps.setString(5, size);
+	            ps.setString(6, page);
+	            ps.setString(7, card_id);
+	            ps.setString(8, text_id);
+	            ps.execute();
+	            return true;
+	          
+	        } catch (Exception e) {
+	        	e.printStackTrace();
+	            throw new Exception("Failed in adding text: " + e.getMessage());
+	        }
+	}
+	
+	public boolean EditImage(String image_id, String image_path, String bounds, String page, String card_id, String card_content) throws Exception {
+		  try {
+	            
+	            PreparedStatement ps = conn.prepareStatement("Update innodb.Images "
+	            		+ "SET image_path = ?, bounds = ?, page = ?, card_id = ?, card_content = ?"
+	            		+ "WHERE image_id = ?");
+	            
+	            ps.setString(1, image_path);
+	            ps.setString(2, bounds);
+	            ps.setString(3, page);
+	            ps.setString(4, card_id);
+	            ps.setString(5, card_content);
+	            ps.setString(6, image_id);
 	            ps.execute();
 	            return true;
 	          
@@ -138,16 +203,17 @@ public class GiftCardDAO {
             throw new Exception("Failed to delete text: " + e.getMessage());
         }
 	}
-
-	public boolean AddImage(String image_id, String image_path, String bounds, String page, String card_id) throws Exception {
+	
+	public boolean AddImage(String image_id, String image_path, String bounds, String page, String card_id, String card_content) throws Exception {
 		  try {
 	            
-	            PreparedStatement ps = conn.prepareStatement("Insert into innodb.Images (image_id, image_path, bounds, page, card_id) values(?,?, ?, ?, ?, ?, ?, ?);");
+	            PreparedStatement ps = conn.prepareStatement("Insert into innodb.Images (image_id, image_path, bounds, page, card_id, card_content) values(?,?, ?, ?, ?, ?);");
 	            ps.setString(1, image_id);
 	            ps.setString(2, image_path);
 	            ps.setString(3, bounds);
 	            ps.setString(4, page);
 	            ps.setString(5, card_id);
+	            ps.setString(6, card_content);
 	            ps.execute();
 	            return true;
 	          
@@ -159,30 +225,17 @@ public class GiftCardDAO {
 
 	public boolean DeleteImage(String image_id) throws Exception {
 		try {
-          PreparedStatement ps = conn.prepareStatement("DELETE FROM Images WHERE image_id = ?;");
-          ps.setString(1, image_id);
-          int numAffected = ps.executeUpdate();
-          ps.close();
-          
-          return (numAffected == 1);
-
-      } catch (Exception e) {
-          throw new Exception("Failed to delete image: " + e.getMessage());
-      }
-	}
+        PreparedStatement ps = conn.prepareStatement("DELETE FROM Images WHERE image_id = ?;");
+        ps.setString(1, image_id);
+        int numAffected = ps.executeUpdate();
+        ps.close();
+        
+        return (numAffected == 1);
 	
-	public boolean EditImage(String image_id, String bounds) throws Exception {
-		try {
-	          PreparedStatement ps = conn.prepareStatement("UPDATE Images SET bounds=? WHERE image_id = ?;");
-	          ps.setString(1, bounds);
-	          ps.setString(2, image_id);
-	          int numAffected = ps.executeUpdate();
-	          ps.close();
-	          
-	          return (numAffected == 1);
-
-	      } catch (Exception e) {
-	          throw new Exception("Failed to edit image: " + e.getMessage());
-	      }
+	    } catch (Exception e) {
+	        throw new Exception("Failed to delete text: " + e.getMessage());
+	    }
 	}
+
+
 }

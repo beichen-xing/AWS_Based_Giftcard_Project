@@ -1,7 +1,12 @@
 package cardcontrol;
 
-import java.io.*;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -18,36 +23,37 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.google.gson.Gson;
 
 import db.GiftCardDAO;
-import http.EditImageRequest;
-import http.EditImageResponse;
+import db.ImageElementDAO;
+import http.ListImageofACardRequest;
+import http.ListImageofACardResponse;
 import model.Card;
+import model.ImageElement;
 
 
-public class EditImageElement implements RequestStreamHandler {
-
+public class ListImageofACard implements RequestStreamHandler {
 	
 	
-/*==================Add TextElement in RDS===========================*/ 
+/*==================get card from RDS===========================*/ 
 	
 	LambdaLogger logger;
 
-	boolean EditImageInRDS(String image_id, String image_path, String bounds, String page,String card_id, String card_content) throws Exception {
-		if (logger != null) { logger.log("in editImage"); }
-		
-		GiftCardDAO dao = new GiftCardDAO();
-		
-		return dao.EditImage(image_id, image_path, bounds, page, card_id, card_content);
-		
+	List<ImageElement> GetImageFromRDS(String id) throws Exception {
+		if (logger != null) { logger.log("in loadCard"); }
+		ImageElementDAO dao = new ImageElementDAO();
+		List<ImageElement> images = dao.getAllImages(id);
+		return images;
 	}
 	
-	public void EditImage(String image_id, String image_path, String bounds, String page, String card_id, String card_content) throws Exception {
-		Card card;
+	public List<ImageElement> loadText(String id) throws Exception {
+		List<ImageElement> images;
 		try {
-			EditImageInRDS(image_id, image_path, bounds, page, card_id, card_content);
+			images = GetImageFromRDS(id);
+			return images;
 		} catch (Exception e) {
-			System.out.println("Error");
+			return null;
 		}
 	}
+
 	
 /*=====================Response a JSON file==================================*/	
 
@@ -64,7 +70,7 @@ public class EditImageElement implements RequestStreamHandler {
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 
-		EditImageResponse response = null;
+		ListImageofACardResponse response = null;
 
 		
 		String body;
@@ -81,33 +87,33 @@ public class EditImageElement implements RequestStreamHandler {
 			}
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
-			response = new EditImageResponse(422);  
+			response = new ListImageofACardResponse(422, "error");  
 			responseJson.put("body", new Gson().toJson(response));
 			processed = true;
 			body = null;
 		}
 
 		if (!processed) {
-			EditImageRequest req = new Gson().fromJson(body, EditImageRequest.class);
+			ListImageofACardRequest req = new Gson().fromJson(body, ListImageofACardRequest.class);
 			logger.log(req.toString());
 
 			boolean fail = false;
 			String failMessage = "";
-			
+			List<ImageElement> images = null;
 			
 			try {
-				EditImage(req.image_id, req.image_path, req.bounds, req.page, req.card_id, req.card_content);
+				images = loadText(req.card_id);
 			} catch (Exception ex) {
-				failMessage = req.image_id + "fail";
+				failMessage = req.card_id + " not-exist";
 				fail = true;
 			}
 			
 
 
 			if (fail) {
-				response = new EditImageResponse(400);
+				response = new ListImageofACardResponse(400, "error");
 			} else {
-				response = new EditImageResponse(200);  
+				response = new ListImageofACardResponse(images,200);  
 			}
 		}
 
