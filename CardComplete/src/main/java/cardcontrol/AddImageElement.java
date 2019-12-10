@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Scanner;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -27,6 +28,9 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
 
 import java.io.File;
@@ -38,46 +42,45 @@ import http.AddImageResponse;
 import model.Card;
 
 public class AddImageElement implements RequestStreamHandler {
+	
+	
+	private AmazonS3 s3 = null;
+	
+	// Note: this works, but it would be better to move this to environment/configuration mechanisms
+	// which you don't have to do for this project.
+	public static final String REAL_BUCKET = "cs509finalinteration/";
+	public static final String TEST_BUCKET = "testconstants/";
 
 /*==================Upload Image to S3===========================*/
-	AWSCredentials credentials = new BasicAWSCredentials(
-			  "<AWS accesskey>", 
-			  "<AWS secretkey>"
-			);
-	
-	AmazonS3 s3client = AmazonS3ClientBuilder
-			  .standard()
-			  .withCredentials(new AWSStaticCredentialsProvider(credentials))
-			  .withRegion(Regions.US_EAST_2)
-			  .build();
-	
-	public void UploadImage(String image_id, InputStream inputStream) {
-		String bucketName = "Album";
-		String fileName = image_id;
-		byte[] contents;
-		try {
-			contents = IOUtils.toByteArray(inputStream);
-			InputStream stream = new ByteArrayInputStream(contents);
-			ObjectMetadata meta = new ObjectMetadata();
-			meta.setContentLength(contents.length);
-			meta.setContentType("image/png");
-
-			s3client.putObject(new PutObjectRequest(
-			        bucketName, fileName, stream, meta)
-			        .withCannedAcl(CannedAccessControlList.Private));
-
-			inputStream.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	boolean uploadImages (String image_id, byte[] content) throws Exception {
+		if (logger != null) { logger.log("in createSystemConstant"); }
+		
+		if (s3 == null) {
+			logger.log("attach to S3 request");
+			s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_2).build();
+			logger.log("attach to S3 succeed");
 		}
 
+		String bucket = REAL_BUCKET;
+		boolean useTestDB = System.getenv("TESTING") != null;
+		if (useTestDB) {
+			bucket = TEST_BUCKET;
+		}
+
+		ByteArrayInputStream bais = new ByteArrayInputStream(content);
+		ObjectMetadata omd = new ObjectMetadata();
+		omd.setContentLength(content.length);
 		
+		// makes the object publicly visible
+		PutObjectResult res = s3.putObject(new PutObjectRequest("cs509finalinteration", bucket + image_id, bais, omd)
+				.withCannedAcl(CannedAccessControlList.PublicRead));
+		
+		// if we ever get here, then whole thing was stored
+		return true;
 	}
 	//String image_path = "https://[bucket].s3.amazonaws.com/img_name.jpg";
 	
 /*==================Load Image name from S3===========================*/ 	
-	
 	
 /*==================Add ImageElement in RDS===========================*/ 
 	
@@ -149,13 +152,16 @@ public class AddImageElement implements RequestStreamHandler {
 			
 			
 			try {
-				AddImage(req.image_id, req.image_path, req.bounds, req.page, req.card_id);
+				byte[] encoded = java.util.Base64.getDecoder().decode(req.content);
+				if(uploadImages(req.image_id, encoded)) {
+					System.out.println(req.bounds);
+					AddImage(req.image_id, req.image_path, req.bounds, req.page, req.card_id);
+				}
 			} catch (Exception ex) {
 				failMessage = req.image_id + "fail";
 				fail = true;
 			}
 			
-
 
 			if (fail) {
 				response = new AddImageResponse(400);

@@ -127,7 +127,7 @@ public class GiftCardDAO {
 
 	public boolean DeleteText(String id) throws Exception {
 		try {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM Texts WHERE text_id = ?;");
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM Texts WHERE text_id = ?;");
             ps.setString(1, id);
             int numAffected = ps.executeUpdate();
             ps.close();
@@ -141,8 +141,8 @@ public class GiftCardDAO {
 
 	public boolean AddImage(String image_id, String image_path, String bounds, String page, String card_id) throws Exception {
 		  try {
-	            
-	            PreparedStatement ps = conn.prepareStatement("Insert into innodb.Images (image_id, image_path, bounds, page, card_id) values(?,?, ?, ?, ?, ?, ?, ?);");
+	            System.out.println(conn);
+	            PreparedStatement ps = conn.prepareStatement("INSERT INTO innodb.Images (image_id, image_path, bounds, page, card_id) values(?,?,?,?,?);");
 	            ps.setString(1, image_id);
 	            ps.setString(2, image_path);
 	            ps.setString(3, bounds);
