@@ -19,7 +19,7 @@
           <el-button class="card-action-btn" type="text" @click="showEditText(text.text_id)">
             <i class="el-icon-edit"></i>
           </el-button>
-          <el-button class="card-action-btn" type="text" @click="delText(text.text_id)">
+          <el-button class="card-action-btn" type="text" @click="delText(text.text_id_unique)">
             <i class="el-icon-delete"></i>
           </el-button>
         </div>
@@ -28,10 +28,10 @@
       <div>
         <span>Images Elements</span>
         <div class="Element" v-for="(image,index) in images" :key="index">
-          <span>{{image.name}}</span>
+          <span>{{image.image_id}}</span>
           <span>,</span>
           <span>{{image.page}}</span>
-          <el-button class="card-action-btn" type="text" @click="delText(text.id)">
+          <el-button class="card-action-btn" type="text" @click="delImage(image.image_id_unique)">
             <i class="el-icon-delete"></i>
           </el-button>
         </div>
@@ -295,10 +295,11 @@ export default {
       },
       addImageForm: {
         image_id: "",
+        image_path: "",
+        bounds: "",
         card_id: "",
         page: "",
-        content: "",
-        bounds: ""
+        card_content: ""
       },
       currentImageForm: {
         image_id: "",
@@ -349,12 +350,19 @@ export default {
   },
   methods: {
     getFile(file, fileList) {
-      console.log(file.raw);
+      //console.log(file.raw);
       this.getBase64(file.raw).then(res => {
-        this.addImageForm.content = res;
         console.log(res);
+        //var segments = res.base64Encoding.split(",");
+        //this.addImageForm.card_content = segments[1];
+        this.addImageForm.card_content = res;
+        console.log(res);
+        console.log(this.addImageForm.card_content);
       });
       this.addImageForm.image_id = file.uid;
+      // this.addImageForm.image_path =
+      //   "https://cs509finalinteration.s3.us-east-2.amazonaws.com/cs509finalinteration/" +
+      //   image_id;
     },
     getBase64(file) {
       return new Promise(function(resolve, reject) {
@@ -388,8 +396,36 @@ export default {
     },
     addImage() {
       this.addImageForm.card_id = this.card_id;
-      console.log(this.addImageForm);
-      this.showAddImageDialog = false;
+      this.$http
+        .post(
+          "https://tpn0863cea.execute-api.us-east-2.amazonaws.com/beta/AddImage",
+          {
+            headers: {
+              "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
+              "cache-control": "no-cache",
+              "Access-Control-Allow-Origin": "*",
+              "Content-Type": "application/json"
+            }
+          },
+          {
+            data: this.addImageForm
+          }
+        )
+        .then(() => {
+          this.$message({
+            message: "Congrats,a new image is added",
+            type: "success"
+          });
+          //this.addTextForm = JSON.parse(JSON.stringify(this.emptyTextForm));
+          this.listImagesFromDB(this.card_id);
+          //console.log(this.addImageForm);
+          this.showAddImageDialog = false;
+          console.log(this.addImageForm);
+        })
+        .catch(err => {
+          //this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
+          this.$message.error(err);
+        });
     },
     displayCard() {
       console.log("triggered");
@@ -460,11 +496,55 @@ export default {
         ctx_right.fillText(content, centerX, centerY);
         ctx_right.restore();
       }
+
+      //var strDataURI =
+      // "https://cs509finalinteration.s3.us-east-2.amazonaws.com/cs509finalinteration/0987654321";
+      //  :image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAE7BEUDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACii";
+      //var img = new Image();
+      //console.log(this.images);
+      //console.log(this.images[0].page);
+      for (var i = 0; i < this.images.length; i++) {
+        //console.log(this.images.length);
+        var bound = this.images[i].bounds.split(",");
+        var boundx = parseInt(bound[0]);
+        var boundy = parseInt(bound[1]);
+        var img = new Image();
+        //img.onload = function() {
+        if (this.images[i].page == "Front page") {
+          img.onload = function() {
+            ctx.drawImage(img, boundx, boundy);
+          };
+        }
+        if (this.images[i].page == "Back page") {
+          img.onload = function() {
+            ctx_back.drawImage(img, boundx, boundy);
+          };
+        }
+        if (this.images[i].page == "Inner Left page") {
+          img.onload = function() {
+            ctx_left.drawImage(img, boundx, boundy);
+          };
+        }
+        if (this.images[i].page == "Inner right page") {
+          img.onload = function() {
+            ctx_right.drawImage(img, boundx, boundy);
+          };
+        }
+        //};
+        img.src =
+          "https://cs509finalinteration.s3.us-east-2.amazonaws.com/cs509finalinteration/" +
+          this.images[i].image_id;
+        //ctx.drawImage(img, 0, 0); // Or at whatever offset you like
+      }
+      //img.src = strDataURI;
+
+      function drawImage(strDataURI) {}
+
       for (var j = 0; j < this.texts.length; j++) {
         var bound = this.texts[j].bounds.split(",");
         var boundx = parseInt(bound[0]);
         var boundy = parseInt(bound[1]);
-        console.log(this.texts[j].page);
+        //console.log(this.texts[j].page);
         if (this.texts[j].page == "Front page") {
           drawText(
             this.texts[j].content,
@@ -632,7 +712,7 @@ export default {
             },
             {
               data: {
-                id: id
+                text_id_unique: id
               }
             }
           )
@@ -666,7 +746,7 @@ export default {
             },
             {
               data: {
-                id: id
+                image_id_unique: id
               }
             }
           )
@@ -675,7 +755,7 @@ export default {
               type: "success",
               message: "The image element is deleted!"
             });
-            this.listImages(this.card_id);
+            this.listImagesFromDB(this.card_id);
           })
           .catch(err => console.log(err));
       });
@@ -782,11 +862,42 @@ export default {
         .catch(err => {
           this.$message.error(err);
         });
+    },
+    listImagesFromDB(id) {
+      //console.log("triggered");
+      this.$http
+        .post(
+          "https://kays5p3a93.execute-api.us-east-2.amazonaws.com/beta/ListImageOfCard",
+          {
+            headers: {
+              "Postman-Token": "ec539028-18ec-4376-8357-423b2d8d5c01",
+              "cache-control": "no-cache",
+              "Access-Control-Allow-Origin": "*",
+              "Content-Type": "application/json"
+            }
+          },
+          {
+            data: {
+              card_id: id
+            }
+          }
+        )
+        .then(res => {
+          //console.log(JSON.parse(JSON.stringify(res.data.images)));
+          this.images = JSON.parse(JSON.stringify(res.data.images));
+          console.log(images);
+          //console.log(this.images[0]);
+        })
+        .catch(err => {
+          //this.addCardForm = JSON.parse(JSON.stringify(this.emptyForm));
+          this.$message.error(err);
+        });
     }
   },
   created() {
     this.card_id = this.$route.query.id;
     this.listText(this.card_id);
+    this.listImagesFromDB(this.card_id);
     this.getCard(this.$route.query.id);
     //console.log("Editor");
   }
